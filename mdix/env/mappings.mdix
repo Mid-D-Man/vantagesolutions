@@ -1,0 +1,14 @@
+// Substitution values for [[key]] placeholders in the scaffold template.
+// Run: node bin/mdix-scaffold.js generate --mappings .mdix/env/mappings.mdix
+
+@CONFIG(
+  version    -> "1.0.0"
+  features   -> "data"
+  debug_mode -> "off"
+)
+
+@DATA(
+  project_name = "vantage-solutions"
+  description  = "Vantage Solutions — digital agency landing page"
+  author       = "MidManStudio"
+)
