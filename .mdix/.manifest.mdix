@@ -1,13 +1,13 @@
 @CONFIG(
   version    -> "1.0.0"
-  generated  -> "2026-06-26T15:09:48Z"
+  generated  -> "2026-06-26T19:55:38Z"
   debug_mode -> "off"
 )
 
 @DATA(
-  template      = ".mdix/project_structure/templates/sveltekit-cf.mdix"
+  template      = ".mdix/project_structure/project_structure.mdix"
   template_hash = "dd9df205ceae"
-  last_run      = "2026-06-26T15:09:48Z"
+  last_run      = "2026-06-26T19:55:38Z"
   new_this_run  = 0
   overridden    = 0
   skipped       = 0
