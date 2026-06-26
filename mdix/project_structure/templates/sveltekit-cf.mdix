@@ -38,12 +38,7 @@
     fc("extensions", "json", "{\n  \"recommendations\": [\n    \"svelte.svelte-vscode\",\n    \"dbaeumer.vscode-eslint\",\n    \"esbenp.prettier-vscode\"\n  ]\n}\n")
     fc("settings",   "json", "{\n  \"editor.formatOnSave\": true,\n  \"[svelte]\": { \"editor.defaultFormatter\": \"svelte.svelte-vscode\" }\n}\n")
 
-  // ── CI / DEPLOY ───────────────────────────────────────────────────────────
-
-  github.workflows::
-    fc("ci", "yml", "name: CI\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n      - run: npm ci\n      - run: npm run build\n      - run: npm run check\n")
-    fc("deploy", "yml", "name: Deploy to Cloudflare Pages\n\non:\n  push:\n    branches: [main]\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read\n      deployments: write\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n      - run: npm ci\n      - run: npm run build\n      - name: Publish\n        uses: cloudflare/pages-action@v1\n        with:\n          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}\n          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}\n          projectName: [[project_name]]\n          directory: .svelte-kit/cloudflare\n          gitHubToken: ${{ secrets.GITHUB_TOKEN }}\n")
-
+  
   // ── SRC ROOT ─────────────────────────────────────────────────────────────
 
   src::
