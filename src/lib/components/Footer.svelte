@@ -2,16 +2,14 @@
   <div class="container">
 
     <div class="cta-block">
-      <p class="eyebrow">// Ready?</p>
-      <h2>Ready to build<br />something real?</h2>
-      <p class="sub">
-        Tell us what you need. We'll tell you how we can help.
-      </p>
-      <a href="mailto:hello@vantagesolutions.io" class="btn-cta">
+      <p class="eyebrow">// Let's work together</p>
+      <h2>Ready to monetize<br />your audience?</h2>
+      <p class="sub">Tell us what you've built. We'll tell you how we can help.</p>
+      <a href="mailto:hello@vantagesolutions.io" class="btn">
         Get Started
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M3 8h10M9 4l4 4-4 4"
-                stroke="currentColor" stroke-width="1.6"
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+          <path d="M3.5 8.5h10M9.5 4.5l4 4-4 4"
+                stroke="currentColor" stroke-width="1.7"
                 stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
@@ -20,12 +18,23 @@
     <div class="divider" aria-hidden="true"></div>
 
     <div class="bottom">
-      <div class="bottom-logo">
-        <div class="logo-mark" aria-hidden="true">VS</div>
-        <span class="wordmark">Vantage <span>Solutions</span></span>
-      </div>
+      <a href="/" class="bottom-logo" aria-label="Vantage Solutions home">
+        <svg width="24" height="22" viewBox="0 0 200 180" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="footer-og" x1="36" y1="6" x2="100" y2="175"
+                            gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#FFA726"/>
+              <stop offset="100%" stop-color="#E65100"/>
+            </linearGradient>
+          </defs>
+          <polygon points="6,6 66,6 100,175 42,175" fill="url(#footer-og)"/>
+          <polygon points="134,6 194,6 172,90 113,90" fill="#0F0F0F"/>
+          <polygon points="110,108 167,108 158,175 100,175" fill="#0F0F0F"/>
+        </svg>
+        <span class="footer-wordmark">Vantage <strong>Solutions</strong></span>
+      </a>
 
-      <nav class="footer-nav" aria-label="Footer navigation">
+      <nav class="footer-nav" aria-label="Footer links">
         <a href="#services">Services</a>
         <a href="#free-tools">Free Tools</a>
         <a href="#raffle">Raffle</a>
@@ -41,44 +50,32 @@
 <style>
   footer {
     border-top: 1px solid var(--border);
+    background: var(--bg);
     padding: 80px 0 40px;
-    position: relative;
-    overflow: hidden;
   }
 
-  footer::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 700px;
-    height: 300px;
-    background: radial-gradient(ellipse at center bottom, rgba(34, 211, 238, 0.05) 0%, transparent 65%);
-    pointer-events: none;
-  }
-
+  /* ── CTA block ── */
   .cta-block {
     text-align: center;
-    padding: 48px 0 60px;
-    position: relative;
+    padding: 48px 0 64px;
   }
 
   .eyebrow {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
+    font-size: 14px;
+    letter-spacing: 0.1em;
     color: var(--accent);
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   h2 {
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
-    font-size: clamp(36px, 6vw, 68px);
+    font-size: clamp(40px, 7vw, 72px);
     letter-spacing: -0.04em;
     line-height: 1.06;
+    color: var(--text);
     margin-bottom: 18px;
   }
 
@@ -88,31 +85,33 @@
     margin-bottom: 36px;
   }
 
-  .btn-cta {
+  .btn {
     display: inline-flex;
     align-items: center;
     gap: 9px;
     background: var(--accent);
-    color: #080C14;
+    color: #fff;
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
     font-size: 16px;
     padding: 15px 28px;
     border-radius: 8px;
-    transition: opacity 0.15s, transform 0.15s;
+    transition: background 0.15s, transform 0.15s;
   }
 
-  .btn-cta:hover {
-    opacity: 0.88;
+  .btn:hover {
+    background: var(--accent-dark);
     transform: translateY(-1px);
   }
 
+  /* ── Divider ── */
   .divider {
     height: 1px;
     background: var(--border);
     margin-bottom: 32px;
   }
 
+  /* ── Bottom bar ── */
   .bottom {
     display: flex;
     align-items: center;
@@ -125,33 +124,20 @@
     display: flex;
     align-items: center;
     gap: 9px;
+    color: var(--text);
   }
 
-  .logo-mark {
-    width: 30px;
-    height: 30px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .footer-wordmark {
     font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: -0.04em;
-  }
-
-  .wordmark {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: -0.02em;
+    font-size: 14px;
+    font-weight: 400;
     color: var(--text-sec);
   }
 
-  .wordmark span { color: var(--text); }
+  .footer-wordmark strong {
+    font-weight: 700;
+    color: var(--text);
+  }
 
   .footer-nav {
     display: flex;
@@ -169,7 +155,7 @@
 
   .footer-nav a:hover {
     color: var(--text);
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--surface);
   }
 
   .copy {
