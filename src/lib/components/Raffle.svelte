@@ -3,114 +3,111 @@
   let state: 'idle' | 'loading' | 'success' | 'error' = 'idle';
   let errorMsg = '';
 
-  function validate(val: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
-  }
+  function valid(v: string) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
 
-  async function handleSubmit() {
-    if (!validate(email)) {
+  async function submit() {
+    if (!valid(email)) {
       errorMsg = 'Please enter a valid email address.';
       state = 'error';
       return;
     }
-
     state = 'loading';
     errorMsg = '';
-
-    // TODO: replace with your actual endpoint (Cloudflare Worker / Formspree / etc.)
-    await new Promise((r) => setTimeout(r, 800));
-
-    // Swap to 'error' here if fetch fails
+    // TODO: wire to Cloudflare Worker / Formspree endpoint
+    await new Promise(r => setTimeout(r, 800));
     state = 'success';
   }
 
-  function handleKey(e: KeyboardEvent) {
-    if (e.key === 'Enter') handleSubmit();
-  }
-
-  function clearError() {
-    if (state === 'error') { state = 'idle'; errorMsg = ''; }
-  }
+  function onKey(e: KeyboardEvent) { if (e.key === 'Enter') submit(); }
+  function clearErr() { if (state === 'error') { state = 'idle'; errorMsg = ''; } }
 </script>
 
 <section id="raffle">
   <div class="container">
     <div class="inner">
 
-      <div class="left">
+      <!-- ── Left copy ── -->
+      <div class="copy">
         <p class="eyebrow">// Monthly Content Raffle</p>
+
         <h2>We'll Create Your Content.<br />Free. Once a Month.</h2>
+
         <div class="body-copy">
           <p>
-            Each month, we pick one business at random to receive a free content package —
-            5 to 10 pieces of marketing content, custom-built around your actual product or service.
-            No charge, no catch.
+            Each month, we pick one business at random to receive a free package of
+            5 to 10 pieces of marketing content and scripts, custom-built around
+            your actual product or service. No charge, no catch.
           </p>
           <p>
-            We study your business, find the angle, and create content designed to genuinely move
-            the needle. If you like what we create, that's exactly the kind of work we can keep
-            doing for you — at scale.
+            We study your business, find the angle, and create content designed to
+            genuinely move the needle. If you like what we create, that's exactly
+            the kind of work we can keep doing for you — at scale.
           </p>
         </div>
-        <div class="perks">
-          <div class="perk">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <path d="M2.5 7l3 3 6-6" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <ul class="perks" aria-label="What's included">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8l3 3 7-7" stroke="var(--accent)" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span>5–10 pieces of custom content</span>
-          </div>
-          <div class="perk">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <path d="M2.5 7l3 3 6-6" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            5–10 pieces of custom content &amp; scripts
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8l3 3 7-7" stroke="var(--accent)" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span>No charge, no strings</span>
-          </div>
-          <div class="perk">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <path d="M2.5 7l3 3 6-6" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            No charge, no strings attached
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8l3 3 7-7" stroke="var(--accent)" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <span>Winner announced monthly</span>
-          </div>
-        </div>
+            Winner announced monthly
+          </li>
+        </ul>
       </div>
 
-      <div class="right">
+      <!-- ── Right form ── -->
+      <div class="form-side">
         <div class="form-card">
           {#if state === 'success'}
-            <div class="success-state" role="alert">
+            <div class="success" role="alert">
               <div class="success-icon" aria-hidden="true">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M5 12l5 5L20 7" stroke="var(--accent)" stroke-width="2"
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                  <path d="M5 14l6 6L23 8" stroke="var(--accent)" stroke-width="2.5"
                         stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
               <h3>You're in the draw.</h3>
               <p>We'll announce the winner at the start of next month. Good luck.</p>
             </div>
-          {:else}
-            <p class="form-label">Enter your email to join</p>
-            <p class="form-sub">Winner announced monthly — no spam, ever.</p>
 
-            <div class="input-wrap">
+          {:else}
+            <p class="form-heading">Enter Your Email</p>
+            <p class="form-sub">Winner Announced Monthly — no spam, ever.</p>
+
+            <div class="field">
               <input
                 type="email"
                 bind:value={email}
-                on:keydown={handleKey}
-                on:input={clearError}
+                on:keydown={onKey}
+                on:input={clearErr}
                 placeholder="you@yourbusiness.com"
                 autocomplete="email"
                 aria-label="Email address"
                 class:has-error={state === 'error'}
                 disabled={state === 'loading'}
               />
+              {#if state === 'error' && errorMsg}
+                <p class="err" role="alert">{errorMsg}</p>
+              {/if}
             </div>
 
-            {#if state === 'error' && errorMsg}
-              <p class="error-msg" role="alert">{errorMsg}</p>
-            {/if}
-
             <button
-              on:click={handleSubmit}
+              on:click={submit}
               disabled={state === 'loading'}
               class:loading={state === 'loading'}
             >
@@ -143,15 +140,20 @@
   section {
     padding: 112px 0;
     border-top: 1px solid var(--border);
+    background: var(--bg);
     position: relative;
     overflow: hidden;
   }
 
-  section::before {
+  /* Subtle orange tint bottom-right */
+  section::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 60% 50% at 80% 50%, rgba(129, 140, 248, 0.07) 0%, transparent 60%);
+    bottom: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(245,124,0,0.06) 0%, transparent 60%);
     pointer-events: none;
   }
 
@@ -161,89 +163,96 @@
     gap: 80px;
     align-items: center;
     position: relative;
+    z-index: 1;
   }
 
-  /* left */
+  /* ── Eyebrow — LARGER and more visible as requested ── */
   .eyebrow {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--accent2);
+    font-size: 16px;             /* was 11px */
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--accent);
     text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  h2 {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: clamp(28px, 3.5vw, 44px);
-    letter-spacing: -0.035em;
-    line-height: 1.12;
     margin-bottom: 24px;
   }
 
-  .body-copy {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  /* ── Headline — bigger ── */
+  h2 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: clamp(32px, 4vw, 52px);
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+    color: var(--text);
     margin-bottom: 28px;
   }
 
+  /* ── Body copy — larger and higher contrast ── */
+  .body-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
   .body-copy p {
-    font-size: 15px;
-    line-height: 1.72;
+    font-size: 17px;            /* was 15px */
+    line-height: 1.75;
     color: var(--text-sec);
   }
 
+  /* ── Perks ── */
   .perks {
+    list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 
-  .perk {
+  .perks li {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 14px;
+    font-size: 16px;            /* was 14px */
     color: var(--text-sec);
+    font-weight: 500;
   }
 
-  /* right — form card */
+  /* ── Form card ── */
   .form-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 40px 36px;
+    padding: 44px 40px;
   }
 
-  .form-label {
+  .form-heading {
     font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    font-size: 20px;
+    font-weight: 700;
+    font-size: 22px;
     letter-spacing: -0.02em;
+    color: var(--text);
     margin-bottom: 6px;
   }
 
   .form-sub {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-muted);
-    margin-bottom: 24px;
+    margin-bottom: 28px;
   }
 
-  .input-wrap {
-    margin-bottom: 10px;
-  }
+  .field { margin-bottom: 14px; }
 
   input {
     width: 100%;
     background: var(--bg);
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
     color: var(--text);
     font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    padding: 13px 16px;
-    border-radius: 7px;
+    font-size: 15px;
+    padding: 14px 16px;
+    border-radius: 8px;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
@@ -251,51 +260,51 @@
   input::placeholder { color: var(--text-muted); }
 
   input:focus {
-    border-color: var(--accent2);
-    box-shadow: 0 0 0 3px var(--accent2-glow);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
   }
 
   input.has-error {
-    border-color: #EF4444;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+    border-color: #DC2626;
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
   }
 
   input:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .error-msg {
-    font-size: 12px;
-    color: #EF4444;
-    margin-bottom: 10px;
+  .err {
+    font-size: 13px;
+    color: #DC2626;
+    margin-top: 7px;
   }
 
+  /* ── Submit button ── */
   button {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    background: var(--accent2);
-    color: #F8FAFC;
+    gap: 9px;
+    background: var(--accent);
+    color: #fff;
     font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    font-size: 15px;
-    padding: 14px 20px;
-    border-radius: 7px;
-    margin-top: 4px;
-    margin-bottom: 16px;
-    transition: opacity 0.15s, transform 0.1s;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    transition: background 0.15s, transform 0.1s;
   }
 
-  button:hover:not(:disabled) { opacity: 0.88; }
+  button:hover:not(:disabled) { background: var(--accent-dark); }
   button:active:not(:disabled) { transform: scale(0.99); }
   button:disabled { opacity: 0.55; cursor: not-allowed; }
   button.loading { cursor: wait; }
 
   .spinner {
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(248, 250, 252, 0.3);
-    border-top-color: #F8FAFC;
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     flex-shrink: 0;
@@ -304,53 +313,55 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .disclaimer {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-muted);
     line-height: 1.6;
     text-align: center;
   }
 
-  /* success state */
-  .success-state {
+  /* ── Success state ── */
+  .success {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 12px;
-    padding: 16px 0;
+    gap: 14px;
+    padding: 20px 0;
   }
 
   .success-icon {
-    width: 52px;
-    height: 52px;
+    width: 60px;
+    height: 60px;
     background: var(--accent-glow);
-    border: 1px solid rgba(34, 211, 238, 0.25);
+    border: 1px solid rgba(245,124,0,0.25);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
-  .success-state h3 {
+  .success h3 {
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
-    font-size: 22px;
+    font-size: 24px;
     letter-spacing: -0.025em;
+    color: var(--text);
   }
 
-  .success-state p {
-    font-size: 14px;
+  .success p {
+    font-size: 15px;
     color: var(--text-sec);
     line-height: 1.65;
   }
 
+  /* ── Responsive ── */
   @media (max-width: 880px) {
     .inner { grid-template-columns: 1fr; gap: 48px; }
   }
 
   @media (max-width: 580px) {
     section { padding: 72px 0; }
-    .form-card { padding: 28px 22px; }
+    .form-card { padding: 30px 22px; }
   }
 </style>
