@@ -1,9 +1,9 @@
 <section id="free-tools">
   <div class="container">
 
-    <div class="section-header">
+    <div class="section-head">
       <p class="eyebrow">// Free Tools</p>
-      <h2>Free Tools — Supported by<br />Vantage Solutions</h2>
+      <h2>Free Tools —<br />Supported by Vantage Solutions</h2>
       <p class="intro">
         Some of what we build, we give away. If it helps you grow, it's worth sharing.
       </p>
@@ -11,16 +11,16 @@
 
     <div class="tools-grid">
 
-      <a
+      
         href="https://midmanpulse.pages.dev"
         target="_blank"
         rel="noopener noreferrer"
         class="tool-card featured"
-        aria-label="Try MidMan Pulse — free tweet generator"
+        aria-label="Try MidMan Pulse — free post generator"
       >
         <div class="tool-header">
-          <div class="tool-icon">
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <div class="tool-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
               <path d="M4 4.5L10 11.5M10 11.5L4 18.5M10 11.5L18 4.5M10 11.5L18 18.5"
                     stroke="currentColor" stroke-width="1.8"
                     stroke-linecap="round" stroke-linejoin="round"/>
@@ -31,13 +31,13 @@
 
         <h3>MidMan Pulse</h3>
         <p>
-          Five ready-to-post tweets from your niche, generated automatically, every single day.
+          Five ready posts from your niche, generated automatically, every single day.
           Completely free.
         </p>
 
-        <div class="tool-cta">
+        <div class="tool-cta" aria-hidden="true">
           Try It Free
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
             <path d="M3 7.5h9M8.5 3.5l4 4-4 4"
                   stroke="currentColor" stroke-width="1.6"
                   stroke-linecap="round" stroke-linejoin="round"/>
@@ -45,16 +45,18 @@
         </div>
       </a>
 
-      <div class="tool-card placeholder">
-        <div class="placeholder-inner">
-          <div class="placeholder-icon" aria-hidden="true">
+      <div class="tool-card placeholder" aria-label="More tools coming soon">
+        <div class="ph-inner">
+          <div class="ph-icon" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M10 4v12M4 10h12"
+                    stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
             </svg>
           </div>
-          <p class="placeholder-label">More free tools coming</p>
-          <p class="placeholder-sub">
-            We build new tools as they become useful. Follow along to catch them when they drop.
+          <p class="ph-label">More free tools coming</p>
+          <p class="ph-sub">
+            We build new tools as they become useful.<br />
+            Follow along to catch them when they drop.
           </p>
         </div>
       </div>
@@ -67,16 +69,15 @@
   section {
     padding: 112px 0;
     border-top: 1px solid var(--border);
+    background: var(--surface);
   }
 
-  .section-header {
-    margin-bottom: 56px;
-  }
+  .section-head { margin-bottom: 52px; }
 
   .eyebrow {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
+    font-size: 14px;
+    letter-spacing: 0.1em;
     color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 20px;
@@ -85,10 +86,11 @@
   h2 {
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
-    font-size: clamp(30px, 4vw, 48px);
+    font-size: clamp(28px, 4vw, 46px);
     letter-spacing: -0.035em;
     line-height: 1.12;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
+    color: var(--text);
   }
 
   .intro {
@@ -98,23 +100,23 @@
     max-width: 480px;
   }
 
+  /* ── Grid ── */
   .tools-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1px;
+    background: var(--border);
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
-    background: var(--border);
   }
 
+  /* ── Featured card ── */
   .tool-card {
-    background: var(--surface);
+    background: var(--bg);
     padding: 44px 40px;
-    transition: background 0.18s;
   }
 
-  /* featured card */
   .featured {
     display: flex;
     flex-direction: column;
@@ -123,7 +125,7 @@
     transition: background 0.18s;
   }
 
-  .featured:hover { background: var(--surface-2); }
+  .featured:hover { background: var(--surface); }
 
   .tool-header {
     display: flex;
@@ -133,10 +135,10 @@
   }
 
   .tool-icon {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     background: var(--accent-glow);
-    border: 1px solid rgba(34, 211, 238, 0.22);
+    border: 1px solid rgba(245, 124, 0, 0.2);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -150,9 +152,9 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--accent);
-    border: 1px solid rgba(34, 211, 238, 0.25);
+    border: 1px solid rgba(245, 124, 0, 0.25);
     background: var(--accent-glow);
-    padding: 4px 10px;
+    padding: 5px 11px;
     border-radius: 4px;
   }
 
@@ -161,21 +163,22 @@
     font-weight: 700;
     font-size: 26px;
     letter-spacing: -0.03em;
+    color: var(--text);
     margin-bottom: 12px;
   }
 
   .featured p {
     font-size: 15px;
-    line-height: 1.7;
+    line-height: 1.72;
     color: var(--text-sec);
-    margin-bottom: 32px;
     flex: 1;
+    margin-bottom: 32px;
   }
 
   .tool-cta {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
     color: var(--accent);
     font-family: 'Outfit', sans-serif;
     font-weight: 600;
@@ -183,16 +186,17 @@
     transition: gap 0.15s;
   }
 
-  .featured:hover .tool-cta { gap: 11px; }
+  .featured:hover .tool-cta { gap: 13px; }
 
-  /* placeholder card */
+  /* ── Placeholder card ── */
   .placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 280px;
   }
 
-  .placeholder-inner {
+  .ph-inner {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -201,9 +205,9 @@
     max-width: 260px;
   }
 
-  .placeholder-icon {
-    width: 44px;
-    height: 44px;
+  .ph-icon {
+    width: 48px;
+    height: 48px;
     border: 1px dashed var(--border);
     border-radius: 10px;
     display: flex;
@@ -212,14 +216,14 @@
     color: var(--text-muted);
   }
 
-  .placeholder-label {
+  .ph-label {
     font-family: 'Outfit', sans-serif;
     font-weight: 600;
     font-size: 16px;
     color: var(--text-muted);
   }
 
-  .placeholder-sub {
+  .ph-sub {
     font-size: 13px;
     line-height: 1.65;
     color: var(--text-muted);
@@ -228,7 +232,7 @@
   @media (max-width: 700px) {
     section { padding: 72px 0; }
     .tools-grid { grid-template-columns: 1fr; border-radius: 8px; }
-    .tool-card { padding: 32px 24px; }
+    .tool-card  { padding: 32px 24px; }
     .placeholder { min-height: 200px; }
   }
 </style>
