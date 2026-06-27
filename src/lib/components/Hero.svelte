@@ -1,46 +1,51 @@
 <section class="hero">
+  <!-- Decorative orange glow — top-right, ambient only -->
   <div class="glow" aria-hidden="true"></div>
-  <div class="grid-lines" aria-hidden="true"></div>
 
   <div class="container">
-    <p class="eyebrow">// Digital Growth Specialists</p>
+    <div class="inner">
+      <p class="eyebrow">// Digital Growth Specialists</p>
 
-    <h1>
-      Vantage<br />
-      <em>Solutions</em>
-    </h1>
+      <!-- Editorial headline: each line breaks deliberately -->
+      <h1>
+        Turn Your<br />
+        Audience<br />
+        Into <em>Income.</em>
+      </h1>
 
-    <p class="sub">
-      We build, create, protect, and grow digital businesses — combining real human work
-      with powerful AI tools to handle the parts of your business you don't have time for.
-    </p>
+      <p class="sub">
+        Vantage Solutions helps niche creators and solopreneurs monetize the audience
+        they've already built — through outreach, offers, content, and the systems behind it.
+      </p>
 
-    <div class="actions">
-      <a href="#services" class="btn-primary">
-        See What We Do
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
-      <a href="#contact" class="btn-ghost">Get in touch</a>
-    </div>
-
-    <div class="stats" aria-label="Key stats">
-      <div class="stat">
-        <span class="stat-value">6</span>
-        <span class="stat-label">Service areas</span>
+      <div class="actions">
+        <a href="#contact" class="btn-primary">
+          Let's Build Your Offer
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4"
+                  stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#services" class="btn-ghost">See What We Do</a>
       </div>
-      <div class="stat-divider" aria-hidden="true"></div>
-      <div class="stat">
-        <span class="stat-value">AI+</span>
-        <span class="stat-label">Human-first delivery</span>
-      </div>
-      <div class="stat-divider" aria-hidden="true"></div>
-      <div class="stat">
-        <span class="stat-value">Free</span>
-        <span class="stat-label">Monthly content drop</span>
-      </div>
+
+      <dl class="stats" aria-label="What we offer at a glance">
+        <div class="stat">
+          <dt>7</dt>
+          <dd>Service areas</dd>
+        </div>
+        <div class="divider" aria-hidden="true"></div>
+        <div class="stat">
+          <dt>AI + Human</dt>
+          <dd>Delivery model</dd>
+        </div>
+        <div class="divider" aria-hidden="true"></div>
+        <div class="stat">
+          <dt>Free</dt>
+          <dd>Monthly content drop</dd>
+        </div>
+      </dl>
     </div>
   </div>
 </section>
@@ -52,52 +57,45 @@
     display: flex;
     align-items: center;
     overflow: hidden;
+    background: var(--bg);
   }
 
   .glow {
     position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 70% 55% at 50% -5%, rgba(34, 211, 238, 0.1) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 35% at 85% 65%, rgba(129, 140, 248, 0.07) 0%, transparent 55%);
+    top: -160px;
+    right: -180px;
+    width: 640px;
+    height: 640px;
+    background: radial-gradient(circle, rgba(245,124,0,0.12) 0%, transparent 65%);
     pointer-events: none;
   }
 
-  .grid-lines {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 80px 80px;
-    opacity: 0.25;
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 0%, transparent 80%);
-    pointer-events: none;
-  }
-
-  .container {
+  .inner {
     position: relative;
     z-index: 1;
-    padding-top: 88px;
-    padding-bottom: 96px;
+    padding: 80px 0 96px;
+    max-width: 740px;
   }
 
+  /* ── Eyebrow ── */
   .eyebrow {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.1em;
     color: var(--accent);
     text-transform: uppercase;
     margin-bottom: 28px;
   }
 
+  /* ── Editorial headline ── */
   h1 {
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
-    font-size: clamp(56px, 10vw, 104px);
-    letter-spacing: -0.045em;
-    line-height: 0.92;
-    margin-bottom: 30px;
+    font-size: clamp(52px, 9vw, 96px);
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    color: var(--text);
+    margin-bottom: 28px;
   }
 
   h1 em {
@@ -105,14 +103,16 @@
     color: var(--accent);
   }
 
+  /* ── Sub ── */
   .sub {
     font-size: clamp(16px, 1.8vw, 19px);
     line-height: 1.72;
     color: var(--text-sec);
-    max-width: 540px;
+    max-width: 560px;
     margin-bottom: 44px;
   }
 
+  /* ── CTAs ── */
   .actions {
     display: flex;
     align-items: center;
@@ -124,18 +124,21 @@
   .btn-primary {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
     background: var(--accent);
-    color: #080C14;
+    color: #fff;
     font-family: 'Outfit', sans-serif;
     font-weight: 600;
     font-size: 15px;
     padding: 14px 24px;
     border-radius: 7px;
-    transition: opacity 0.15s, transform 0.15s;
+    transition: background 0.15s, transform 0.15s;
   }
 
-  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-primary:hover {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+  }
 
   .btn-ghost {
     display: inline-flex;
@@ -151,50 +154,47 @@
   .btn-ghost:hover {
     color: var(--text);
     border-color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--surface);
   }
 
-  /* stats bar */
+  /* ── Stats ── */
   .stats {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 28px;
     flex-wrap: wrap;
   }
 
-  .stat {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
+  .stat { display: flex; flex-direction: column; gap: 4px; }
 
-  .stat-value {
+  .stat dt {
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
-    font-size: 24px;
-    letter-spacing: -0.03em;
+    font-size: 22px;
+    letter-spacing: -0.02em;
     color: var(--text);
   }
 
-  .stat-label {
+  .stat dd {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
+    font-size: 10px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    color: var(--text-muted);
   }
 
-  .stat-divider {
+  .divider {
     width: 1px;
-    height: 36px;
+    height: 32px;
     background: var(--border);
   }
 
+  /* ── Responsive ── */
   @media (max-width: 640px) {
-    .container { padding-top: 56px; padding-bottom: 64px; }
+    .inner { padding: 56px 0 64px; }
     .actions { flex-direction: column; align-items: stretch; }
     .btn-primary, .btn-ghost { justify-content: center; }
-    .stat-divider { display: none; }
-    .stats { gap: 20px; }
+    .divider { display: none; }
+    .stats { gap: 18px; }
   }
 </style>
