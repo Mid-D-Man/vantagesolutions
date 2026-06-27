@@ -11,14 +11,25 @@ jobs:
       contents: read
       deployments: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      - run: npm ci
-      - run: npm run build
-      - name: Publish
+
+      - name: Install dependencies
+        id: install
+        run: npm ci
+
+      - name: Build
+        id: build
+        run: npm run build
+
+      - name: Publish to Cloudflare Pages
+        id: deploy
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -26,3 +37,47 @@ jobs:
           projectName: vantage-solutions
           directory: .svelte-kit/cloudflare
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Write job summary
+        if: always()
+        env:
+          INSTALL_OUT: ${{ steps.install.outcome }}
+          BUILD_OUT:   ${{ steps.build.outcome }}
+          DEPLOY_OUT:  ${{ steps.deploy.outcome }}
+          DEPLOY_URL:  ${{ steps.deploy.outputs.url }}
+          ALIAS_URL:   ${{ steps.deploy.outputs.alias }}
+          RUN_URL:     ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          icon() {
+            case "$1" in
+              success) echo "✅" ;;
+              skipped) echo "⏭️" ;;
+              *)        echo "❌" ;;
+            esac
+          }
+          {
+            echo "# 🚀 Deploy — Vantage Solutions"
+            echo ""
+            echo "**Commit:** \`${{ github.sha }}\`  |  **Ref:** \`${{ github.ref_name }}\`  |  **Triggered by:** ${{ github.actor }}"
+            echo ""
+            echo "| Step | Status |"
+            echo "|------|--------|"
+            echo "| 📦 Install  | $(icon $INSTALL_OUT) \`$INSTALL_OUT\` |"
+            echo "| 🔨 Build    | $(icon $BUILD_OUT) \`$BUILD_OUT\` |"
+            echo "| ☁️  Deploy   | $(icon $DEPLOY_OUT) \`$DEPLOY_OUT\` |"
+            echo ""
+            if [[ "$DEPLOY_OUT" == "success" ]]; then
+              echo "## 🌐 Live URLs"
+              echo ""
+              if [[ -n "$DEPLOY_URL" ]]; then
+                echo "- **Preview:** $DEPLOY_URL"
+              fi
+              if [[ -n "$ALIAS_URL" ]]; then
+                echo "- **Alias:**   $ALIAS_URL"
+              fi
+              echo ""
+              echo "> ✅ **Deployment successful.**"
+            else
+              echo "> ❌ **Deployment failed.** See full logs: $RUN_URL"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
