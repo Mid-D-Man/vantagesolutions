@@ -17,6 +17,9 @@
   ~fremote<object>(name, ext, url) { return { name = name, ext = ext, content = "remote::" + url } }
   ~gitkeep<object>()               { return { name = ".gitkeep", ext = "", content = "" } }
   ~hidden<object>(seg)             { return { segment = seg } }
+  ~move<object>(from_path, to_path) {
+    return { from_path = from_path, to_path = to_path }
+  }
 )
 
 @DATA(
@@ -24,60 +27,20 @@
   description  = "Vantage Solutions — digital agency landing page"
   author       = "MidManStudio"
 
-  hidden_dirs::
-    hidden("github")
-    hidden("vscode")
-
-  post_hooks::
-    "npm install"
-    "echo 'Scaffold complete — run: npm run dev'"
-
-  // ── IDE ───────────────────────────────────────────────────────────────────
-
-  vscode::
-    fc("extensions", "json", "{\n  \"recommendations\": [\n    \"svelte.svelte-vscode\",\n    \"dbaeumer.vscode-eslint\",\n    \"esbenp.prettier-vscode\"\n  ]\n}\n")
-    fc("settings",   "json", "{\n  \"editor.formatOnSave\": true,\n  \"[svelte]\": { \"editor.defaultFormatter\": \"svelte.svelte-vscode\" }\n}\n")
-
   
-  // ── SRC ROOT ─────────────────────────────────────────────────────────────
+  // ── PATCH: move components from wrong location → correct location ─────────
+  //
+  // User placed components under src/components/ instead of src/lib/components/.
+  // move_files runs BEFORE update_files so moved content is never overwritten.
+  // Each move is a no-op if the source doesn't exist (fresh repo).
 
-  src::
-    fc("app", "html", "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <link rel=\"icon\" href=\"%sveltekit.assets%/favicon.ico\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <meta name=\"description\" content=\"Vantage Solutions — We build, create, protect, and grow digital businesses.\" />\n    <meta property=\"og:title\" content=\"Vantage Solutions\" />\n    <meta property=\"og:description\" content=\"Digital growth specialists. Real human work plus powerful AI tools.\" />\n    <meta property=\"og:type\" content=\"website\" />\n    %sveltekit.head%\n  </head>\n  <body data-sveltekit-preload-data=\"hover\">\n    <div style=\"display: contents\">%sveltekit.body%</div>\n  </body>\n</html>\n")
-    fc("app", "css", "@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap');\n\n:root {\n  --bg:           #080C14;\n  --surface:      #0F172A;\n  --surface-2:    #162032;\n  --border:       #1E2D40;\n  --accent:       #22D3EE;\n  --accent-glow:  rgba(34, 211, 238, 0.1);\n  --accent2:      #818CF8;\n  --accent2-glow: rgba(129, 140, 248, 0.12);\n  --text:         #F8FAFC;\n  --text-sec:     #94A3B8;\n  --text-muted:   #475569;\n  --max-w:        1200px;\n}\n\n*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }\nhtml { scroll-behavior: smooth; }\nbody {\n  background: var(--bg);\n  color: var(--text);\n  font-family: 'Inter', sans-serif;\n  min-height: 100vh;\n  overflow-x: hidden;\n  -webkit-font-smoothing: antialiased;\n}\na { color: inherit; text-decoration: none; }\nimg { max-width: 100%; display: block; }\nbutton { cursor: pointer; font-family: inherit; border: none; }\n\n.container {\n  width: 100%;\n  max-width: var(--max-w);\n  margin: 0 auto;\n  padding: 0 48px;\n}\n\n@media (max-width: 768px) {\n  .container { padding: 0 20px; }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  *, *::before, *::after { transition: none !important; animation: none !important; }\n}\n")
+  move_files::
+    move("src/components/Header.svelte",    "src/lib/components/Header.svelte")
+    move("src/components/Hero.svelte",      "src/lib/components/Hero.svelte")
+    move("src/components/WhatWeDo.svelte",  "src/lib/components/WhatWeDo.svelte")
+    move("src/components/FreeTools.svelte", "src/lib/components/FreeTools.svelte")
+    move("src/components/Raffle.svelte",    "src/lib/components/Raffle.svelte")
+    move("src/components/FollowUs.svelte",  "src/lib/components/FollowUs.svelte")
+    move("src/components/Footer.svelte",    "src/lib/components/Footer.svelte")
 
-  // ── LIB ──────────────────────────────────────────────────────────────────
-
-  src.lib::
-    fc("index", "ts", "export { default as Header }    from './components/Header.svelte';\nexport { default as Hero }      from './components/Hero.svelte';\nexport { default as WhatWeDo }  from './components/WhatWeDo.svelte';\nexport { default as FreeTools } from './components/FreeTools.svelte';\nexport { default as Raffle }    from './components/Raffle.svelte';\nexport { default as FollowUs }  from './components/FollowUs.svelte';\nexport { default as Footer }    from './components/Footer.svelte';\n")
-
-  src.lib.components::
-    f("Header",    "svelte")
-    f("Hero",      "svelte")
-    f("WhatWeDo",  "svelte")
-    f("FreeTools", "svelte")
-    f("Raffle",    "svelte")
-    f("FollowUs",  "svelte")
-    f("Footer",    "svelte")
-
-  // ── ROUTES ───────────────────────────────────────────────────────────────
-
-  src.routes::
-    fc("+layout", "ts",     "export const prerender = true;\nexport const trailingSlash = 'always';\n")
-    fc("+layout", "svelte", "<script>\n  import '../app.css';\n</script>\n\n<slot />\n")
-    fc("+page",   "svelte", "<script lang=\"ts\">\n  import { Header, Hero, WhatWeDo, FreeTools, Raffle, FollowUs, Footer } from '$lib';\n</script>\n\n<Header />\n<main>\n  <Hero />\n  <WhatWeDo />\n  <FreeTools />\n  <Raffle />\n  <FollowUs />\n</main>\n<Footer />\n")
-
-  // ── STATIC ───────────────────────────────────────────────────────────────
-
-  static::
-    gitkeep()
-
-  // ── PROJECT ROOT ─────────────────────────────────────────────────────────
-
-  root::
-    fc("README", "md", "# [[project_name]]\n\n[[description]]\n\n## Setup\n\n```bash\nnpm install\nnpm run dev\n```\n\n## Deploy\n\nPushes to `main` auto-deploy to Cloudflare Pages.\n\n### Required secrets\n- `CLOUDFLARE_API_TOKEN`\n- `CLOUDFLARE_ACCOUNT_ID`\n")
-    fc("package", "json", "{\n  \"name\": \"[[project_name]]\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\":         \"vite dev\",\n    \"build\":       \"vite build\",\n    \"preview\":     \"vite preview\",\n    \"check\":       \"svelte-kit sync && svelte-check --tsconfig ./tsconfig.json\",\n    \"check:watch\": \"svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch\"\n  },\n  \"devDependencies\": {\n    \"@sveltejs/adapter-cloudflare\":  \"^4.0.0\",\n    \"@sveltejs/kit\":                 \"^2.0.0\",\n    \"@sveltejs/vite-plugin-svelte\":  \"^3.0.0\",\n    \"svelte\":                        \"^4.2.7\",\n    \"svelte-check\":                  \"^3.6.0\",\n    \"typescript\":                    \"^5.0.0\",\n    \"vite\":                          \"^5.0.3\"\n  }\n}\n")
-    fc("svelte.config", "js", "import adapter from '@sveltejs/adapter-cloudflare';\nimport { vitePreprocess } from '@sveltejs/vite-plugin-svelte';\n\n/** @type {import('@sveltejs/kit').Config} */\nconst config = {\n  preprocess: vitePreprocess(),\n  kit: { adapter: adapter() }\n};\n\nexport default config;\n")
-    fc("vite.config", "ts", "import { sveltekit } from '@sveltejs/kit/vite';\nimport { defineConfig } from 'vite';\n\nexport default defineConfig({\n  plugins: [sveltekit()]\n});\n")
-    fc("tsconfig", "json", "{\n  \"extends\": \"./.svelte-kit/tsconfig.json\",\n  \"compilerOptions\": {\n    \"allowJs\":                          true,\n    \"checkJs\":                          true,\n    \"esModuleInterop\":                  true,\n    \"forceConsistentCasingInFileNames\": true,\n    \"resolveJsonModule\":                true,\n    \"skipLibCheck\":                     true,\n    \"sourceMap\":                        true,\n    \"strict\":                           true\n  }\n}\n")
-    fc(".gitignore", "", ".svelte-kit\n/build\nnode_modules\n.env\n.env.*\n!.env.example\n.DS_Store\n*.log\n.wrangler\n")
 )
