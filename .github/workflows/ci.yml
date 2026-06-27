@@ -10,11 +10,56 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      - run: npm ci
-      - run: npm run build
-      - run: npm run check
+
+      - name: Install dependencies
+        id: install
+        run: npm ci
+
+      - name: Build
+        id: build
+        run: npm run build
+
+      - name: Type check
+        id: typecheck
+        run: npm run check
+
+      - name: Write job summary
+        if: always()
+        env:
+          INSTALL_OUT:  ${{ steps.install.outcome }}
+          BUILD_OUT:    ${{ steps.build.outcome }}
+          CHECK_OUT:    ${{ steps.typecheck.outcome }}
+          RUN_URL:      ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          icon() {
+            case "$1" in
+              success) echo "✅" ;;
+              skipped) echo "⏭️" ;;
+              *)        echo "❌" ;;
+            esac
+          }
+          {
+            echo "# 🔍 CI — Vantage Solutions"
+            echo ""
+            echo "**Commit:** \`${{ github.sha }}\`  |  **Ref:** \`${{ github.ref_name }}\`  |  **Triggered by:** ${{ github.actor }}"
+            echo ""
+            echo "| Step | Status |"
+            echo "|------|--------|"
+            echo "| 📦 Install      | $(icon $INSTALL_OUT) \`$INSTALL_OUT\` |"
+            echo "| 🔨 Build        | $(icon $BUILD_OUT) \`$BUILD_OUT\` |"
+            echo "| 🔍 Type check   | $(icon $CHECK_OUT) \`$CHECK_OUT\` |"
+            echo ""
+            if [[ "$BUILD_OUT" == "success" && "$CHECK_OUT" == "success" ]]; then
+              echo "> ✅ **All checks passed** — ready to deploy."
+            else
+              echo "> ❌ **One or more checks failed.** See logs: $RUN_URL"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
