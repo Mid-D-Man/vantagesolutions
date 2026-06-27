@@ -1,8 +1,7 @@
 name: Deploy to Cloudflare Pages
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch: # Restricts the workflow to manual triggers only
 
 jobs:
   deploy:
@@ -27,6 +26,17 @@ jobs:
       - name: Build
         id: build
         run: npm run build
+
+      - name: Ensure Cloudflare Pages Project Exists
+        id: create-project
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Attempts to create the project. 
+          # The '|| true' ensures that if the project already exists (which returns an error), 
+          # the pipeline won't crash and will gracefully move on to deployment.
+          npx wrangler pages project create vantage-solutions --production-branch main || true
 
       - name: Publish to Cloudflare Pages
         id: deploy
@@ -73,7 +83,7 @@ jobs:
                 echo "- **Preview:** $DEPLOY_URL"
               fi
               if [[ -n "$ALIAS_URL" ]]; then
-                echo "- **Alias:**   $ALIAS_URL"
+                echo "- **Alias:** $ALIAS_URL"
               fi
               echo ""
               echo "> ✅ **Deployment successful.**"
