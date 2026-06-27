@@ -20,7 +20,7 @@
 )
 
 @DATA(
-  project_name = "vantage-solutions"
+  project_name = "vantagesolutions"
   description  = "Vantage Solutions — digital agency landing page"
   author       = "MidManStudio"
 
