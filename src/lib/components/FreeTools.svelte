@@ -11,7 +11,7 @@
 
     <div class="tools-grid">
 
-      
+      <a
         href="https://midmanpulse.pages.dev"
         target="_blank"
         rel="noopener noreferrer"
