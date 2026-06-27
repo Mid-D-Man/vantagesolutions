@@ -1,22 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap');
 
+/* ── Brand token system — light mode ──────────────────────────────────── */
 :root {
-  --bg:           #080C14;
-  --surface:      #0F172A;
-  --surface-2:    #162032;
-  --border:       #1E2D40;
-  --accent:       #22D3EE;
-  --accent-glow:  rgba(34, 211, 238, 0.1);
-  --accent2:      #818CF8;
-  --accent2-glow: rgba(129, 140, 248, 0.12);
-  --text:         #F8FAFC;
-  --text-sec:     #94A3B8;
-  --text-muted:   #475569;
-  --max-w:        1200px;
+  /* Backgrounds — warm stone whites, not clinical */
+  --bg:          #FFFFFF;
+  --surface:     #F6F4F0;
+  --surface-2:   #EDEBE6;
+
+  /* Borders */
+  --border:      #E0DDD7;
+
+  /* Brand orange — pulled from the logo gradient midpoint */
+  --accent:      #F57C00;
+  --accent-lt:   #FFA726;
+  --accent-dark: #E65100;
+  --accent-glow: rgba(245, 124, 0, 0.1);
+
+  /* Type */
+  --text:        #0F0F0F;
+  --text-sec:    #524F4C;
+  --text-muted:  #9C9894;
+
+  --max-w: 1200px;
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+
 body {
   background: var(--bg);
   color: var(--text);
@@ -24,9 +34,11 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-a { color: inherit; text-decoration: none; }
-img { max-width: 100%; display: block; }
+
+a      { color: inherit; text-decoration: none; }
+img    { max-width: 100%; display: block; }
 button { cursor: pointer; font-family: inherit; border: none; }
 
 .container {
@@ -35,6 +47,8 @@ button { cursor: pointer; font-family: inherit; border: none; }
   margin: 0 auto;
   padding: 0 48px;
 }
+
+main { display: flex; flex-direction: column; }
 
 @media (max-width: 768px) {
   .container { padding: 0 20px; }
