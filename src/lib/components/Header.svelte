@@ -38,6 +38,7 @@
       <a href="#services">Services</a>
       <a href="#free-tools">Free Tools</a>
       <a href="#contact" class="cta">Get Started</a>
+<a href="#articles">Articles</a>
     </nav>
   </div>
 </header>
