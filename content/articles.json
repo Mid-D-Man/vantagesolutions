@@ -1,0 +1,39 @@
+{
+  "articles": [
+    {
+      "id": "audience-to-income-2026",
+      "title": "Turning an Audience Into Actual Income",
+      "excerpt": "Most creators sit on an audience they never monetize. Here's the framework we use to fix that.",
+      "category": "Growth",
+      "date": "2026-06-20",
+      "image": "",
+      "content": "Most niche creators have the hardest part done already — they have people paying attention. What's missing is almost never reach, it's an offer and a system to deliver it.\n\nWe start every engagement the same way: audit what the audience already responds to, then build the smallest possible offer that solves one real problem for them.\n\nFrom there it's repetition. Outreach, content, and the systems behind both, run consistently until the offer finds its footing.",
+      "link": {
+        "url": "https://example.com/blog/audience-to-income",
+        "label": "Read the Full Breakdown"
+      }
+    },
+    {
+      "id": "free-tools-philosophy",
+      "title": "Why We Give Some of This Away for Free",
+      "excerpt": "MidMan Pulse is free and always will be. Here's the reasoning, not just the marketing line.",
+      "category": "Behind the Scenes",
+      "date": "2026-06-10",
+      "image": "",
+      "content": "Free tools aren't a funnel trick for us, they're a filter. The people who get real value from a free tool are exactly the people worth working with directly.\n\nIt also keeps us honest — a tool has to be good enough to stand on its own with zero pressure to buy anything."
+    },
+    {
+      "id": "content-systems-not-hacks",
+      "title": "Content Systems Beat Content Hacks",
+      "excerpt": "Growth hacks expire. Systems compound. A short case for building the boring thing first.",
+      "category": "Case Study",
+      "date": "2026-05-28",
+      "image": "",
+      "content": "Every few months a new posting trick makes the rounds, gets copied into the ground, and stops working. Meanwhile the accounts that keep growing are running unglamorous systems: a content calendar, a repeatable format, a feedback loop.\n\nWe'd rather hand a client a system they can run without us in six months than a hack that dies in six weeks.",
+      "link": {
+        "url": "https://example.com/blog/content-systems",
+        "label": "See the Full Case Study"
+      }
+    }
+  ]
+}
