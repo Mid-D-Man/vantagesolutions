@@ -6,3 +6,4 @@ export { default as FreeTools }    from './components/FreeTools.svelte';
 export { default as Raffle }       from './components/Raffle.svelte';
 export { default as FollowUs }     from './components/FollowUs.svelte';
 export { default as Footer }       from './components/Footer.svelte';
+export { default as Articles }     from './components/Articles.svelte';
