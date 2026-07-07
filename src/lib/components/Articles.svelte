@@ -167,7 +167,7 @@
 
       {#if activeArticle.image}
         {#if activeArticle.link}
-          
+          <a
             class="modal-media"
             href={activeArticle.link.url}
             target="_blank"
@@ -198,7 +198,7 @@
         </div>
 
         {#if activeArticle.link}
-          
+          <a
             class="modal-link"
             href={activeArticle.link.url}
             target="_blank"
