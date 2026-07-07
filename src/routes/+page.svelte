@@ -4,9 +4,9 @@
     Hero,
     ImageGallery,
     WhatWeDo,
+    Articles,
     FreeTools,
     Raffle,
-    Articles,
     FollowUs,
     Footer,
   } from '$lib';
@@ -28,9 +28,9 @@
   <Hero />
   <ImageGallery />
   <WhatWeDo />
+  <Articles />
   <FreeTools />
   <Raffle />
-  <Articles />
   <FollowUs />
 </main>
 <Footer />
