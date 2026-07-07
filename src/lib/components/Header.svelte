@@ -35,10 +35,10 @@
     </a>
 
     <nav aria-label="Main navigation">
-      <a href="#services">Services</a>
-      <a href="#free-tools">Free Tools</a>
-      <a href="#contact" class="cta">Get Started</a>
-<a href="#articles">Articles</a>
+      <a href="/#services">Services</a>
+      <a href="/#free-tools">Free Tools</a>
+      <a href="/#articles">Articles</a>
+      <a href="/#contact" class="cta">Get Started</a>
     </nav>
   </div>
 </header>
