@@ -6,9 +6,13 @@
     WhatWeDo,
     FreeTools,
     Raffle,
+    Articles,
     FollowUs,
     Footer,
   } from '$lib';
+
+  export const prerender = true;
+  export const trailingSlash = 'always';
 </script>
 
 <svelte:head>
@@ -26,6 +30,7 @@
   <WhatWeDo />
   <FreeTools />
   <Raffle />
+  <Articles />
   <FollowUs />
 </main>
 <Footer />
