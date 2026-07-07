@@ -1,17 +1,21 @@
 <!--
-  Articles — no database. Articles live in content/articles.json in this repo
-  and are fetched at runtime from raw.githubusercontent.com, so publishing a
-  new article is just editing that file and pushing to `main` — no rebuild,
-  no redeploy.
+  Articles — no database. Categories + articles live in content/articles.json
+  in this repo and are fetched at runtime from raw.githubusercontent.com, so
+  publishing a new article (or a whole new category) is just editing that
+  file and pushing to `main` — no rebuild, no redeploy.
 
   Note: raw.githubusercontent.com sits behind Fastly's CDN, so a push can take
   a few minutes to show up here. That's expected, not a bug.
 
+  Each category renders as its own block with a "View Articles" toggle.
+  Clicking an article navigates to its own permalink page (/articles/{id}/)
+  instead of opening a modal, so every article has a real, shareable URL.
+
   To point this at a different repo/branch/path, change FEED_URL below.
 -->
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import type { Article, ArticlesFeed } from '$lib/types/article';
+  import { onMount } from 'svelte';
+  import type { Article, ArticlesFeed, Category } from '$lib/types/article';
 
   const FEED_URL =
     'https://raw.githubusercontent.com/Mid-D-Man/vantagesolutions/main/content/articles.json';
@@ -19,8 +23,8 @@
   type LoadState = 'loading' | 'success' | 'error' | 'empty';
 
   let state: LoadState = 'loading';
-  let articles: Article[] = [];
-  let activeArticle: Article | null = null;
+  let categories: Category[] = [];
+  let expanded: Record<string, boolean> = {};
 
   async function loadFeed() {
     state = 'loading';
@@ -29,10 +33,11 @@
       if (!res.ok) throw new Error(`Feed responded ${res.status}`);
 
       const data = (await res.json()) as ArticlesFeed;
-      const list = Array.isArray(data?.articles) ? data.articles : [];
+      const list = Array.isArray(data?.categories) ? data.categories : [];
 
-      articles = [...list].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''));
-      state = articles.length ? 'success' : 'empty';
+      categories = list;
+      const totalArticles = list.reduce((sum, c) => sum + (c.articles?.length ?? 0), 0);
+      state = list.length && totalArticles ? 'success' : 'empty';
     } catch (err) {
       console.error('Failed to load articles feed:', err);
       state = 'error';
@@ -41,18 +46,12 @@
 
   onMount(loadFeed);
 
-  function openArticle(article: Article) {
-    activeArticle = article;
-    document.body.style.overflow = 'hidden';
+  function toggleCategory(id: string) {
+    expanded = { ...expanded, [id]: !expanded[id] };
   }
 
-  function closeArticle() {
-    activeArticle = null;
-    document.body.style.overflow = '';
-  }
-
-  function handleKey(e: KeyboardEvent) {
-    if (e.key === 'Escape' && activeArticle) closeArticle();
+  function sortedArticles(articles: Article[]): Article[] {
+    return [...(articles ?? [])].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''));
   }
 
   function formatDate(iso?: string): string {
@@ -61,19 +60,7 @@
     if (Number.isNaN(d.getTime())) return iso;
     return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(d);
   }
-
-  function paragraphs(content: string): string[] {
-    return content.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-  }
-
-  $: bodyParagraphs = activeArticle ? paragraphs(activeArticle.content) : [];
-
-  onDestroy(() => {
-    if (typeof document !== 'undefined') document.body.style.overflow = '';
-  });
 </script>
-
-<svelte:window on:keydown={handleKey} />
 
 <section id="articles">
   <div class="container">
@@ -107,115 +94,79 @@
       </div>
 
     {:else}
-      <div class="articles-grid">
-        {#each articles as article (article.id)}
-          <button class="card" on:click={() => openArticle(article)} aria-haspopup="dialog">
-            <div class="card-media">
-              {#if article.image}
-                <img src={article.image} alt={article.title} loading="lazy" />
-              {:else}
-                <div class="card-placeholder" aria-hidden="true">
-                  <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-                    <rect x="5" y="3" width="20" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/>
-                    <path d="M10 10h10M10 15h10M10 20h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      <div class="categories">
+        {#each categories as category (category.id)}
+          <div class="category-block">
+            <div class="category-head">
+              <div class="category-heading">
+                <h3>{category.name}</h3>
+                {#if category.description}<p class="category-desc">{category.description}</p>{/if}
+              </div>
+
+              {#if category.articles?.length}
+                <button
+                  class="toggle-btn"
+                  aria-expanded={!!expanded[category.id]}
+                  on:click={() => toggleCategory(category.id)}
+                >
+                  {expanded[category.id] ? 'Hide Articles' : `View Articles (${category.articles.length})`}
+                  <svg
+                    class="chev"
+                    class:open={expanded[category.id]}
+                    width="12" height="12" viewBox="0 0 12 12" fill="none"
+                  >
+                    <path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6"
+                          stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                </div>
+                </button>
+              {:else}
+                <span class="coming-soon">Coming soon</span>
               {/if}
             </div>
 
-            <div class="card-body">
-              <div class="card-meta">
-                {#if article.category}<span class="cat">{article.category}</span>{/if}
-                {#if article.date}<span class="date">{formatDate(article.date)}</span>{/if}
+            {#if expanded[category.id] && category.articles?.length}
+              <div class="articles-grid">
+                {#each sortedArticles(category.articles) as article (article.id)}
+                  <a class="card" href={`/articles/${article.id}/`}>
+                    <div class="card-media">
+                      {#if article.image}
+                        <img src={article.image} alt={article.title} loading="lazy" />
+                      {:else}
+                        <div class="card-placeholder" aria-hidden="true">
+                          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                            <rect x="5" y="3" width="20" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M10 10h10M10 15h10M10 20h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                          </svg>
+                        </div>
+                      {/if}
+                    </div>
+
+                    <div class="card-body">
+                      <div class="card-meta">
+                        {#if article.date}<span class="date">{formatDate(article.date)}</span>{/if}
+                      </div>
+                      <h4>{article.title}</h4>
+                      <p class="excerpt">{article.excerpt}</p>
+                      <span class="read-cta" aria-hidden="true">
+                        Read Article
+                        <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
+                          <path d="M3 7.5h9M8.5 3.5l4 4-4 4"
+                                stroke="currentColor" stroke-width="1.6"
+                                stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </span>
+                    </div>
+                  </a>
+                {/each}
               </div>
-              <h3>{article.title}</h3>
-              <p class="excerpt">{article.excerpt}</p>
-              <span class="read-cta" aria-hidden="true">
-                Read Article
-                <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
-                  <path d="M3 7.5h9M8.5 3.5l4 4-4 4"
-                        stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-            </div>
-          </button>
+            {/if}
+          </div>
         {/each}
       </div>
     {/if}
 
   </div>
 </section>
-
-{#if activeArticle}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-  <div class="modal-backdrop" on:click={closeArticle} role="presentation">
-    <div
-      class="modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="article-modal-title"
-      on:click|stopPropagation
-    >
-      <button class="modal-close" on:click={closeArticle} aria-label="Close article">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-      </button>
-
-      {#if activeArticle.image}
-        {#if activeArticle.link}
-          <a
-            class="modal-media"
-            href={activeArticle.link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${activeArticle.link.label ?? 'Open link'} (opens in a new tab)`}
-          >
-            <img src={activeArticle.image} alt={activeArticle.title} />
-          </a>
-        {:else}
-          <div class="modal-media">
-            <img src={activeArticle.image} alt={activeArticle.title} />
-          </div>
-        {/if}
-      {/if}
-
-      <div class="modal-body">
-        <div class="card-meta">
-          {#if activeArticle.category}<span class="cat">{activeArticle.category}</span>{/if}
-          {#if activeArticle.date}<span class="date">{formatDate(activeArticle.date)}</span>{/if}
-        </div>
-
-        <h2 id="article-modal-title">{activeArticle.title}</h2>
-
-        <div class="modal-copy">
-          {#each bodyParagraphs as para}
-            <p>{para}</p>
-          {/each}
-        </div>
-
-        {#if activeArticle.link}
-          <a
-            class="modal-link"
-            href={activeArticle.link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {activeArticle.link.label ?? 'Read Full Article'}
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-              <path d="M3 7.5h9M8.5 3.5l4 4-4 4"
-                    stroke="currentColor" stroke-width="1.6"
-                    stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        {/if}
-      </div>
-    </div>
-  </div>
-{/if}
 
 <style>
   section {
@@ -301,15 +252,81 @@
 
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ── Categories ── */
+  .categories {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .category-block {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .category-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 26px;
+  }
+
+  .category-heading h3 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .category-desc {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .toggle-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .chev { transition: transform 0.2s; }
+  .chev.open { transform: rotate(180deg); }
+
+  .coming-soon {
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
   /* ── Grid ── */
   .articles-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
     background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
+    border-top: 1px solid var(--border);
   }
 
   .card {
@@ -321,7 +338,7 @@
     transition: background 0.18s;
   }
 
-  .card:hover { background: var(--surface); }
+  .card:hover { background: var(--surface-2); }
 
   .card-media {
     aspect-ratio: 16 / 10;
@@ -355,27 +372,16 @@
     flex-wrap: wrap;
   }
 
-  .cat {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: var(--accent-glow);
-    padding: 4px 9px;
-    border-radius: 4px;
-  }
-
   .date {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--text-muted);
   }
 
-  .card-body h3 {
+  .card-body h4 {
     font-family: 'Outfit', sans-serif;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 17px;
     letter-spacing: -0.02em;
     line-height: 1.3;
     color: var(--text);
@@ -402,112 +408,13 @@
 
   .card:hover .read-cta { gap: 11px; }
 
-  /* ── Modal ── */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 15, 15, 0.6);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    z-index: 1000;
-  }
-
-  .modal {
-    position: relative;
-    width: 100%;
-    max-width: 640px;
-    max-height: 88vh;
-    overflow-y: auto;
-    background: var(--bg);
-    border-radius: 14px;
-    border: 1px solid var(--border);
-  }
-
-  .modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    color: var(--text-sec);
-    z-index: 2;
-    transition: color 0.15s, border-color 0.15s;
-  }
-
-  .modal-close:hover { color: var(--accent); border-color: var(--accent); }
-
-  .modal-media {
-    display: block;
-    aspect-ratio: 16 / 9;
-    background: var(--surface);
-    overflow: hidden;
-  }
-
-  .modal-media img { width: 100%; height: 100%; object-fit: cover; }
-
-  .modal-body {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 36px 36px 40px;
-  }
-
-  .modal-body h2 {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: clamp(22px, 3vw, 28px);
-    letter-spacing: -0.025em;
-    line-height: 1.2;
-    color: var(--text);
-  }
-
-  .modal-copy {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .modal-copy p {
-    font-size: 15px;
-    line-height: 1.75;
-    color: var(--text-sec);
-  }
-
-  .modal-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    align-self: flex-start;
-    background: var(--accent);
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    margin-top: 6px;
-    transition: background 0.15s;
-  }
-
-  .modal-link:hover { background: var(--accent-dark); }
-
   @media (max-width: 880px) {
     .articles-grid { grid-template-columns: 1fr 1fr; }
   }
 
   @media (max-width: 640px) {
     section { padding: 72px 0; }
-    .articles-grid { grid-template-columns: 1fr; border-radius: 8px; }
-    .modal-body { padding: 28px 22px 32px; }
+    .category-head { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .articles-grid { grid-template-columns: 1fr; }
   }
 </style>
