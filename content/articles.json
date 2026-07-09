@@ -1,10 +1,18 @@
 {
   "categories": [
     {
-      "id": "systems",
-      "name": "Systems",
+      "id": "business-systems",
+      "name": "Business Systems",
       "description": "The unglamorous mechanics that make growth repeatable.",
       "articles": [
+        {
+          "id": "customer-discovery-five-questions-2026",
+          "title": "This Is How You Create Software People Will Beg to Pay For",
+          "excerpt": "Most SaaS founders ask ‘Would you use this?’ — one of the least useful questions in customer discovery. Here’s a five-question framework that finds out if the problem is worth paying to solve.",
+          "date": "2026-07-09",
+          "image": "",
+          "content": "I learned this from a SaaS founder who failed at three startups before he finally discovered the antidote. Not the antidote to failure. The antidote to building software nobody wants. And it's surprisingly simple.\n\nBy the end of this article, you'll learn a customer discovery framework that helps you validate whether people have a problem worth solving before you spend months building software they were never going to pay for. Let's dive in.\n\nThe fat mistake most SaaS founders make. Man gets an idea. Man spends weeks—or months—or even years—building it. Man finishes. Launch day cometh. Then silence. No customers. No traction. No revenue.\n\nThe assumption is usually that the product wasn't good enough. But more often, the real problem happened long before a single line of code was written because the founder never properly validated the problem. Or worse—they asked the wrong questions.\n\nThe question that lies to you. Most aspiring founders ask something like this in their customer discovery surveys: 'Would you use this?' Sounds reasonable, huh? It's also one of the least useful questions you can ask.\n\nWhy? Because you're asking someone to predict their future behavior. Humans are notoriously bad at doing that. Saying, 'Yes, I'd probably use it,' costs nothing. People want to be helpful. They want to encourage you. They imagine themselves using your product under ideal circumstances. Then real life gets in the way.\n\nThat's how founders end up with dozens of positive survey responses… but few—or even zero—paying customers.\n\nAsk about the past, not the future. Instead of asking what people might do, ask what they're already doing. Past behavior is far more reliable than future intentions. People may misjudge what they'll do next month, but they know exactly how they solved the problem yesterday. That's where the real insights live.\n\nThe five-question customer discovery system. Every customer conversation in your survey should uncover one thing: is this problem painful enough that people will actually pay to solve it? These five questions help you find out.\n\n1. 'How do you solve this today?' This reveals your real competition. It usually isn't another startup. It's spreadsheets, sticky notes, WhatsApp, email, manual work, or simply doing nothing. You can't position yourself effectively until you know what you're replacing. Make sense?\n\n2. 'What's the most frustrating part?' This is where your marketing begins. Pay close attention to the exact words people use. Those words often become your headlines, landing pages, advertisements, and sales copy. Don't rewrite their language. Borrow it.\n\n3. 'What have you already tried?' This separates people actively looking for a solution from people who simply enjoy complaining. Someone who's already spent time, money, or effort trying to solve the problem is much more likely to become a paying customer. Intent matters.\n\n4. 'What does the ideal solution look like?' Notice you're not asking which features they want. You're asking about the outcome they actually care about. Customers rarely buy software because it has Feature A or Feature B. They buy software because they want a result.\n\n5. 'What does this problem cost you?' This is the most important question of all. Does the problem cost them money? Time? Customers? Productivity? Stress? Lost opportunities? If someone can't clearly explain what the problem is costing them, there's a good chance it isn't painful enough for them to pay to solve. Pain creates urgency. Urgency drives purchases.\n\nThe pattern you're looking for. Don't stop after five conversations—or even ten. Aim for at least 25 customer interviews. Somewhere around conversations 15 to 20, something interesting usually happens. You stop hearing new problems. Instead, the same frustrations appear again. The same workarounds keep coming up. The same words get repeated. That's your signal. You're no longer listening to individual opinions. You're uncovering a pattern. And patterns are what businesses are built on.\n\nDon't just copy the tactic. Understand the SYSTEM. The real lesson isn't to memorize five questions. It's to understand why they work. Founders often fall in love with their solution before proving the problem exists. Customer discovery surveys reverse that process. Instead of asking people to validate your idea, you're validating the problem itself. Once you know the problem is real—and painful—you can build with far greater confidence that people will actually pay for what you create.\n\nThat's the difference between building software people say they want… and building software people genuinely want badly enough to buy.\n\nYour turn. Schedule five customer conversations this week. Ask these five questions in order. Resist the temptation to pitch your idea. Just listen. Then repeat the process until you've completed at least 25 conversations. If you keep hearing the same frustrations, the same workarounds, and the same language, you're probably onto something worth building.\n\nNeed help applying this to your business? Book a free Growth Strategy Session with Vantage Solutions. We'll identify your biggest growth bottleneck and give you practical next steps—whether you work with us or not. Send us a DM on any of the platforms below to get started."
+        },
         {
           "id": "one-cta-beats-five-2026",
           "title": "One Call to Action Beats Five Every Time",
@@ -24,8 +32,8 @@
       ]
     },
     {
-      "id": "marketing",
-      "name": "Marketing",
+      "id": "content-systems",
+      "name": "Content Systems",
       "description": "Copywriting and advertising angles that make products sell themselves.",
       "articles": [
         {
@@ -39,57 +47,34 @@
       ]
     },
     {
-      "id": "growth",
-      "name": "Growth",
-      "description": "Turning attention and audience into actual revenue.",
+      "id": "networking-systems",
+      "name": "Networking Systems",
+      "description": "Turning other creators and businesses into allies instead of competition.",
       "articles": [
         {
-          "id": "audience-to-income-2026",
-          "title": "Turning an Audience Into Actual Income",
-          "excerpt": "Most creators sit on an audience they never monetize. Here's the framework we use to fix that.",
-          "date": "2026-06-20",
+          "id": "the-clique-method-2026",
+          "title": "The Clique Method",
+          "excerpt": "Everyone chasing followers is playing the game wrong. Here’s the simple networking system that turns other creators into referral partners instead of competition.",
+          "date": "2026-07-06",
           "image": "",
-          "content": "Most niche creators have the hardest part done already — they have people paying attention. What's missing is almost never reach, it's an offer and a system to deliver it.\n\nWe start every engagement the same way: audit what the audience already responds to, then build the smallest possible offer that solves one real problem for them.\n\nFrom there it's repetition. Outreach, content, and the systems behind both, run consistently until the offer finds its footing.",
-          "link": {
-            "url": "https://example.com/blog/audience-to-income",
-            "label": "Read the Full Breakdown"
-          }
+          "content": "There's an old saying: 'No man is an island.' It applies to every aspect of life, but it's never been more true than when you're trying to build a business online. One of the biggest mistakes entrepreneurs make is treating everyone in their space as competition.\n\nBy the end of this article, you'll learn a simple networking system that can generate opportunities, referrals, collaborations, and even customers—without spending a single dollar on advertising.\n\nStop seeing competitors. Start seeing prospects. When you come across another creator or business in your industry, your first instinct might be to compare yourself. They have more followers. Better content. More engagement. More customers.\n\nBut that's the wrong way to look at them. You see, every creator or business is missing something or has room to improve somewhere. In the same way, you're missing things too, and there are places where you can improve.\n\nOne might be great at graphic design. Another writes incredible copy. Someone else has a loyal email list. Another has strong sales skills. Instead of competing with all of them individually, imagine combining those strengths. That's where the real leverage begins.\n\nThe Clique Method. Here's the system.\n\n1. Find your lane. Don't obsess over finding others in your exact niche. Instead, seek people who speak the same language and are chasing similar goals. If you help small businesses grow… talk to marketers, copywriters, designers, web developers, business coaches, and agencies. You don't have to sell the same thing. You just need enough overlap that helping one another makes sense.\n\n2. Engage first. Before you ever ask for anything, show up on their posts (a few comments are okay so long as they're replying—but the more times you engage, the better). Become familiar before becoming memorable. People are naturally more receptive to someone they've seen contributing consistently than someone whose first interaction is a pitch.\n\n3. Pitch the clique. Once you've built some familiarity by engaging with and commenting on their posts, send the DM. Keep it simple and straightforward. Something like: 'I've noticed a few of us are all trying to solve the same problem—growing attention for our businesses. What do you think about creating a small group where we share ideas, referrals, and opportunities?' Notice how you're not pitching yourself? You're pitching a shared benefit.\n\n4. Expect rejection. Some won't reply. Some won't be interested. Some will join and disappear. That's normal. From personal experience, around 30% of those who join remain active—and that's enough, depending on how many people you reached out to. You don't need fifty people. You only need a handful who genuinely participate. Five committed people will outperform fifty inactive members every time.\n\n5. Become the glue. This is hands-down the most important part. Talk to members individually. You'll notice the group chat will mostly consist of surface-level interactions—sharing posts, and so on. That's why you need to build rapport with each active member.\n\nLearn what they're good at (beyond the obvious). Find out what they need. Then start connecting people. Recommend the designer to the copywriter. Recommend the copywriter to the agency owner. Recommend someone's service when another member needs it. Bundle a partner's offer with your own—or with another partner's—if it genuinely creates more value for the customer. The more opportunities you create between other people, the more valuable you become to the entire group.\n\nWhy this works. A small clique creates accountability, trust, referrals, partnerships, and opportunities that simply don't exist when everyone is working alone. Instead of each person trying to solve every problem themselves, the group begins sharing resources, introductions, expertise, and even customers. The result isn't just faster growth; it's leveraged growth.\n\nDon't just copy the tactic. Understand the SYSTEM. The lesson isn't 'start a networking group.' It's that every business has gaps and room for improvement. So instead of trying to fill every gap yourself, build systems that connect you with people whose strengths complement yours. That's leverage. The connector isn't always the smartest person in the room, but they're often the most valuable.\n\nYour turn. Find three creators or businesses operating in your lane today. Don't pitch them. Engage with them. Start genuine conversations. Then, when the opportunity is right, invite them to build a small clique around a shared goal. You'll be surprised how quickly opportunities begin finding you instead of you chasing them.\n\nNeed help applying this to your business? Book a free Growth Strategy Session with Vantage Solutions. We'll identify your biggest growth bottleneck and give you practical next steps—whether you work with us or not. Send us a DM on any of the platforms below to get started."
         }
       ]
     },
     {
-      "id": "behind-the-scenes",
-      "name": "Behind the Scenes",
-      "description": "How and why we build the things we build.",
+      "id": "mindset-and-others",
+      "name": "Mindset and Others",
+      "description": "Perspective shifts, myths, and the occasional detour from the playbook.",
       "articles": [
         {
-          "id": "free-tools-philosophy",
-          "title": "Why We Give Some of This Away for Free",
-          "excerpt": "MidMan Pulse is free and always will be. Here's the reasoning, not just the marketing line.",
-          "date": "2026-06-10",
+          "id": "funding-gap-not-performance-gap-2026",
+          "title": "Why Do Men-Led Businesses End Up More Successful Than Women-Led Businesses?",
+          "excerpt": "Men-led businesses statistically generate more revenue than women-led ones. The data says the gap isn’t about performance — it’s about who gets funded.",
+          "date": "2026-07-02",
           "image": "",
-          "content": "Free tools aren't a funnel trick for us, they're a filter. The people who get real value from a free tool are exactly the people worth working with directly.\n\nIt also keeps us honest — a tool has to be good enough to stand on its own with zero pressure to buy anything."
-        }
-      ]
-    },
-    {
-      "id": "case-study",
-      "name": "Case Study",
-      "description": "Real breakdowns of what worked, and why.",
-      "articles": [
-        {
-          "id": "content-systems-not-hacks",
-          "title": "Content Systems Beat Content Hacks",
-          "excerpt": "Growth hacks expire. Systems compound. A short case for building the boring thing first.",
-          "date": "2026-05-28",
-          "image": "",
-          "content": "Every few months a new posting trick makes the rounds, gets copied into the ground, and stops working. Meanwhile the accounts that keep growing are running unglamorous systems: a content calendar, a repeatable format, a feedback loop.\n\nWe'd rather hand a client a system they can run without us in six months than a hack that dies in six weeks.",
-          "link": {
-            "url": "https://example.com/blog/content-systems",
-            "label": "See the Full Case Study"
-          }
+          "content": "Statistically, men-led businesses often end up generating more revenue than women-led businesses. Why is that? Many people assume they already know the answer. Are men inherently better entrepreneurs? Are men naturally smarter? Are men bigger risk-takers? Do men start more businesses? Spoiler alert: not anymore.\n\nBy the end of this article, you'll understand what the research actually says about this gap. First of all, let's swing a wrecking ball at those stereotypes. Because the data tells a very different story.\n\nAs of 2024, women started 49% of new businesses in the United States—nearly identical to men and a dramatic increase from just 29% in 2019. Some recent surveys even suggest women have been launching businesses at a slightly higher rate than men.\n\nIt gets even more interesting. Research from Boston Consulting Group found that female-founded startups generated more revenue per dollar invested than male-founded startups. Think about that for a moment. Women are starting businesses at about the same rate as men, and research suggests they often generate a higher return on each investment dollar.\n\nSo why do male-led businesses still tend to become bigger, raise more capital, and ultimately generate more total revenue?\n\nThe answer isn't performance. The biggest difference isn't actually business performance. It's access to funding. In 2024, all-female founding teams received just 2.3% of the $289 billion in global venture capital funding. All-male founding teams received 83.6%.\n\nThat funding gap has real consequences. Average annual revenue for women-owned businesses is estimated at roughly $219,000–$226,000, while male-owned businesses average approximately $474,000–$607,000. Let that sink in.\n\nWhy does the funding gap exist? Researchers have identified several factors that appear to contribute to this imbalance.\n\n1. Venture capital networks remain overwhelmingly male. Most venture capital decision-makers are still men, with women making up only about 17–18% of VC decision-makers. Like many industries, investors often build relationships with—and invest in—people who resemble themselves or come from similar networks.\n\n2. Pitch evaluations aren't always objective. Multiple studies have documented bias during investment pitches. One study found that investors rated identical startup pitches as more persuasive and more evidence-based when they were presented using a male voice. Another found that investors often ask male and female founders different kinds of questions, with the questions directed at men tending to position them more favorably.\n\n3. The stereotype of a 'fundable founder.' Many investors unconsciously associate successful founders with traits such as dominance, aggression, and bold risk-taking. Whether or not those traits actually predict entrepreneurial success, they continue to influence perceptions of who 'looks' like a successful founder.\n\n4. Women-focused markets are often underestimated. Products aimed primarily at women have sometimes been dismissed as serving 'niche' markets, despite representing enormous commercial opportunities. When investors underestimate the size of these markets, promising businesses can struggle to secure funding.\n\n5. Failure is judged differently. This one's interesting. A Yale study found that after one unsuccessful investment in a woman-led startup, investors became less likely to fund women-led businesses again. However, a successful investment in a woman-led company didn't make those same investors more likely to invest in women in the future. Researchers did not observe the same pattern with male founders.\n\n6. Attribution bias makes the problem harder to solve. Even attempts to reduce the funding gap can encounter another obstacle. Research suggests that when female founders receive funding exclusively from female investors, outside observers may attribute that success to solidarity rather than merit. Ironically, this perception can make raising future investment even more difficult.\n\nThe real lesson. It's easy to look at larger companies and assume the biggest businesses simply have the best founders. But business growth isn't determined by ability alone. Access to capital plays an enormous role in how quickly a company can hire, market, expand, and compete. That's why it's important to distinguish between business performance and business funding. They're related—but they're not the same thing.\n\nYour turn. The next time someone argues that men are simply better at business because male-led companies tend to be larger, remember this: women are starting businesses at nearly the same rate as men, and some research suggests they generate higher returns per investment dollar. The biggest gap is in who receives the funding needed to scale them.\n\nNeed help applying this to your business? Book a free Growth Strategy Session with Vantage Solutions. We'll identify your biggest growth bottleneck and give you practical next steps—whether you work with us or not. Send us a DM on any of the platforms below to get started."
         }
       ]
     }
   ]
-}
+        }
