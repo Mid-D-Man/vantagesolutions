@@ -28,8 +28,8 @@
             </linearGradient>
           </defs>
           <polygon points="6,6 66,6 100,175 42,175" fill="url(#footer-og)"/>
-          <polygon points="134,6 194,6 172,90 113,90" fill="#0F0F0F"/>
-          <polygon points="110,108 167,108 158,175 100,175" fill="#0F0F0F"/>
+          <polygon points="134,6 194,6 172,90 113,90" fill="currentColor"/>
+          <polygon points="110,108 167,108 158,175 100,175" fill="currentColor"/>
         </svg>
         <span class="footer-wordmark">Vantage <strong>Solutions</strong></span>
       </a>
