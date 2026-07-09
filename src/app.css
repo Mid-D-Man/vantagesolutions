@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ── Brand token system — light mode ──────────────────────────────────── */
+/* ── Brand token system — dark professional ───────────────────────────── */
 :root {
-  /* Backgrounds — warm stone whites, not clinical */
-  --bg:          #FFFFFF;
-  --surface:     #F6F4F0;
-  --surface-2:   #EDEBE6;
+  /* Backgrounds — deep charcoal & dark theme */
+  --bg:          #121212;
+  --surface:     #1A1A1A;
+  --surface-2:   #242424;
 
   /* Borders */
-  --border:      #E0DDD7;
+  --border:      #333333;
 
-  /* Brand orange — pulled from the logo gradient midpoint */
+  /* Brand orange — maintained for high-impact contrast */
   --accent:      #F57C00;
   --accent-lt:   #FFA726;
   --accent-dark: #E65100;
-  --accent-glow: rgba(245, 124, 0, 0.1);
+  --accent-glow: rgba(245, 124, 0, 0.15);
 
-  /* Type */
-  --text:        #0F0F0F;
-  --text-sec:    #524F4C;
-  --text-muted:  #9C9894;
+  /* Type — soft off-white for professional readability */
+  --text:        #F8F8F8;
+  --text-sec:    #B0B0B0;
+  --text-muted:  #757575;
 
   --max-w: 1200px;
 }
