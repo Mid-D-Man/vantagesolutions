@@ -129,8 +129,8 @@
                 {#each sortedArticles(category.articles) as article (article.id)}
                   <a class="card" href={`/articles/${article.id}/`}>
                     <div class="card-media">
-                      {#if article.image}
-                        <img src={article.image} alt={article.title} loading="lazy" />
+                      {#if article.images?.[0]}
+                        <img src={article.images[0].url} alt={article.images[0].alt ?? article.title} loading="lazy" />
                       {:else}
                         <div class="card-placeholder" aria-hidden="true">
                           <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
