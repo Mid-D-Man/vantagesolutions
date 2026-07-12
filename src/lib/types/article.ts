@@ -13,19 +13,41 @@ export interface ArticleLink {
   label?: string;
 }
 
+export interface ArticleImage {
+  /**
+   * Referenced by a `[[image:ID]]` token placed on its own paragraph
+   * (i.e. surrounded by blank lines) inside `content`, to control exactly
+   * where that image renders in the article body.
+   *
+   * Any image in `images` that no token in `content` refers to is placed
+   * automatically at the top of the article, in array order — so a single
+   * cover-image article needs zero markup, and only articles that want
+   * images interleaved with specific paragraphs need tokens at all.
+   */
+  id: string;
+  url: string;
+  alt?: string;
+  /** Optional caption shown under the image on the article page. */
+  caption?: string;
+}
+
 export interface Article {
   /** Unique slug — used as the permalink segment: /articles/{id}/ */
   id: string;
   title: string;
   /** Short teaser shown on the card. */
   excerpt: string;
-  /** Full body shown on the article's own page. Paragraphs separated by a blank line. */
+  /**
+   * Full body shown on the article's own page. Paragraphs separated by a
+   * blank line. May contain `[[image:ID]]` tokens (see ArticleImage) to
+   * place images at exact points in the flow.
+   */
   content: string;
   /** ISO date string, e.g. "2026-06-15". */
   date?: string;
-  /** Cover image. Falls back to a placeholder icon when omitted. */
-  image?: string;
-  /** Optional outbound link — rendered as a CTA (and on the image) on the article page. */
+  /** Ordered list of images used by this article — see ArticleImage. */
+  images?: ArticleImage[];
+  /** Optional outbound link — rendered as a CTA on the article page. */
   link?: ArticleLink;
 }
 
