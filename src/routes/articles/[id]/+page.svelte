@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Header, Footer } from '$lib';
+  import { parseArticleBlocks } from '$lib/utils/article-content';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -13,12 +14,9 @@
     return new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(d);
   }
 
-  function paragraphs(content: string): string[] {
-    return content.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
-  }
-
   $: article = data.article;
-  $: bodyParagraphs = article ? paragraphs(article.content) : [];
+  $: blocks = article ? parseArticleBlocks(article) : [];
+  $: coverImage = article?.images?.[0];
   $: pageUrl = article ? `${SITE_URL}/articles/${article.id}/` : SITE_URL;
 </script>
 
@@ -31,12 +29,12 @@
     <meta property="og:title" content={article.title} />
     <meta property="og:description" content={article.excerpt} />
     <meta property="og:url" content={pageUrl} />
-    {#if article.image}<meta property="og:image" content={article.image} />{/if}
+    {#if coverImage}<meta property="og:image" content={coverImage.url} />{/if}
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={article.title} />
     <meta name="twitter:description" content={article.excerpt} />
-    {#if article.image}<meta name="twitter:image" content={article.image} />{/if}
+    {#if coverImage}<meta name="twitter:image" content={coverImage.url} />{/if}
   {:else if data.status === 'notfound'}
     <title>Article Not Found — Vantage Solutions</title>
     <meta name="robots" content="noindex" />
@@ -71,15 +69,16 @@
         <h1>{article.title}</h1>
         <p class="excerpt">{article.excerpt}</p>
 
-        {#if article.image}
-          <div class="cover">
-            <img src={article.image} alt={article.title} />
-          </div>
-        {/if}
-
         <div class="copy">
-          {#each bodyParagraphs as para}
-            <p>{para}</p>
+          {#each blocks as block}
+            {#if block.type === 'text'}
+              <p>{block.text}</p>
+            {:else}
+              <figure class="inline-image">
+                <img src={block.image.url} alt={block.image.alt ?? article.title} loading="lazy" />
+                {#if block.image.caption}<figcaption>{block.image.caption}</figcaption>{/if}
+              </figure>
+            {/if}
           {/each}
         </div>
 
@@ -180,16 +179,6 @@
     margin-bottom: 32px;
   }
 
-  .cover {
-    aspect-ratio: 16 / 9;
-    background: var(--surface);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 36px;
-  }
-
-  .cover img { width: 100%; height: 100%; object-fit: cover; }
-
   .copy {
     display: flex;
     flex-direction: column;
@@ -200,6 +189,26 @@
     font-size: 16px;
     line-height: 1.8;
     color: var(--text-sec);
+  }
+
+  .inline-image {
+    margin: 10px 0 16px;
+  }
+
+  .inline-image img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 12px;
+    background: var(--surface);
+    display: block;
+  }
+
+  .inline-image figcaption {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
   }
 
   .cta-link {
