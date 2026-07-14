@@ -9,6 +9,9 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     if: ${{ vars.AUTO_RUN_ENABLED != 'false' || github.event_name == 'workflow_dispatch' }}
+    defaults:
+      run:
+        working-directory: contacts/scripts
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,4 +29,4 @@ jobs:
           INGEST_URL: ${{ secrets.INGEST_URL }}
           INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
-        run: python scripts/scrape_contacts.py
+        run: python scrape_contacts.py
