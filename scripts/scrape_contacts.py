@@ -32,7 +32,7 @@ from urllib.robotparser import RobotFileParser
 from search_queries import SEARCH_QUERIES as _ALL_QUERIES
 QUERIES = [q for q in _ALL_QUERIES if q.get("enabled", True)]
 
-INGEST_URL             = os.environ["INGEST_URL"]              # e.g. https://vantage-contacts.<subdomain>.workers.dev/api/ingest
+INGEST_URL             = os.environ["INGEST_URL"]              # e.g. https://vantagesolutions.pages.dev/api/ingest
 INGEST_SECRET          = os.environ["INGEST_SECRET"]
 GOOGLE_PLACES_API_KEY  = os.environ["GOOGLE_PLACES_API_KEY"]
 

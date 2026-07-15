@@ -1,114 +1,105 @@
-# Vantage Solutions — Contact Discovery Pipeline
+# Vantage Solutions — Contact Discovery
 
-Three pieces, one repo:
-
-- **`src/`** — a Cloudflare Worker + D1 database: ingest endpoint, paginated business API, and the `/access/master` admin panel.
-- **`scripts/`** — the Python scraper: discovers businesses via Google Places, checks each new one's own site for a published contact email.
-- **`.github/workflows/`** — the cron job that runs the scraper every 6 hours.
-
-Suggested repo layout (this is all one project):
+Part of the vantagesolutions SvelteKit app — same deploy, same Pages project, same domain. Not a
+separate Worker, not a separate repo.
 
 ```
-vantage-contacts/
-├── wrangler.jsonc
-├── package.json
-├── tsconfig.json
-├── schema.sql
+vantagesolutions/
 ├── src/
-│   ├── index.ts
-│   ├── auth.ts
-│   ├── db.ts
-│   ├── csv.ts
-│   ├── admin-ui.ts
-│   └── types.ts
-├── scripts/
-│   ├── search_queries.py
-│   └── scrape_contacts.py
+│   ├── app.d.ts                     ← NEW — types the D1 + env bindings
+│   ├── lib/
+│   │   ├── server/                  ← NEW — db.ts, auth.ts, csv.ts (D1 queries, sessions)
+│   │   └── types/business.ts        ← NEW
+│   └── routes/
+│       ├── api/                     ← NEW — ingest, login, logout, businesses (list/status/export)
+│       └── access/master/           ← NEW — the admin panel page
+├── schema.sql                       ← D1 schema
+├── scripts/                         ← the Python scraper
 └── .github/workflows/
-    └── scrape-contacts.yml
+    ├── deploy.yml                   ← EXISTING, one new step added (applies schema.sql)
+    └── scrape-contacts.yml          ← NEW — cron, every 6h
 ```
 
-## 1. Google Cloud — enable Places API (New)
+Confirmed by actually building this repo: `npm run build` succeeds, `svelte-check` reports 0
+errors, and every new route compiles into the same `.svelte-kit/output` that `deploy.yml` already
+uploads via `cloudflare/pages-action`. One deployment, one project.
 
-The **legacy** Places API can no longer be enabled on new Google Cloud projects — this scraper is
-built against **Places API (New)**, which is the current version.
+## 1. Create the D1 database and bind it (Cloudflare dashboard, one time)
 
-1. Create/select a project at https://console.cloud.google.com
-2. Enable **"Places API (New)"** specifically (not "Places API" — that's the legacy one).
-3. Create an API key, then restrict it: API restrictions → **Places API (New)** only.
-4. Set up billing. Text Search itself has a free monthly allotment, but requesting
-   `websiteUri` / `internationalPhoneNumber` / `rating` puts each call in the Enterprise SKU
-   tier — check current pricing at https://developers.google.com/maps/billing-and-pricing/pricing
-   before turning on a lot of queries. Keep `search_queries.py` short at first and watch usage.
+This part can't happen through GitHub — Cloudflare Pages bindings are dashboard-only, there's no
+way around that regardless of deploy mechanism.
 
-## 2. Cloudflare — Worker + D1
+1. Cloudflare dashboard → **Workers & Pages → D1** → **Create database** → name it
+   `vantagesolutions-contacts` → Create.
+2. Cloudflare dashboard → **Workers & Pages → vantage-solutions** (your existing Pages project) →
+   **Settings → Functions → D1 database bindings** → Add binding:
+   - Variable name: `DB`
+   - Database: `vantagesolutions-contacts`
 
-```bash
-npm install
-npx wrangler login
+That's the binding done — `event.platform.env.DB` now works in every route, in every future
+deploy, automatically.
 
-# Create the database, then paste the returned database_id into wrangler.jsonc
-npx wrangler d1 create vantage-contacts
+## 2. Add the four contacts secrets (same Settings page)
 
-# Apply the schema
-npm run db:migrate
+Same Pages project → **Settings → Environment variables** → add these four, each marked
+**Encrypt**:
 
-# Set secrets (you'll be prompted for each value)
-npx wrangler secret put INGEST_SECRET     # any long random string — the scraper's bearer token
-npx wrangler secret put ADMIN_USERNAME    # your admin login
-npx wrangler secret put ADMIN_PASSWORD    # your admin login
-npx wrangler secret put SESSION_SECRET    # random string, e.g. `openssl rand -hex 32`
+| Variable | Value |
+|---|---|
+| `INGEST_SECRET` | any long random string you make up |
+| `ADMIN_USERNAME` | your admin panel login |
+| `ADMIN_PASSWORD` | your admin panel login |
+| `SESSION_SECRET` | another random string |
 
-# Deploy
-npm run deploy
-```
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` should already exist as **GitHub** repo secrets
+— `deploy.yml` has needed them since before any of this. Nothing to do there unless they're
+missing, in which case: Cloudflare dashboard → profile → API Tokens → Create Token → "Edit
+Cloudflare Workers" template, and account ID is on the dashboard's right sidebar.
 
-Wrangler prints your Worker's URL after deploy — something like
-`https://vantage-contacts.<your-subdomain>.workers.dev`. That's your `INGEST_URL` base.
+## 3. Google Places API (New)
 
-### Reaching `/access/master`
+Unchanged from before:
 
-- **Simplest:** just use the Worker's own URL — `https://vantage-contacts.<your-subdomain>.workers.dev/access/master`
-- **On your actual domain** (`vantagesolutions.com/access/master`): this needs `vantagesolutions.com`
-  added to Cloudflare as a real DNS zone (not just a `*.pages.dev` site). If it already is, add a
-  **Workers Route** in the dashboard — Workers & Pages → your Worker → Settings → Triggers → Routes
-  — pattern `vantagesolutions.com/access/master*`. If the domain isn't on Cloudflare DNS, the
-  `*.workers.dev` URL is the option until it is.
+1. https://console.cloud.google.com → enable **"Places API (New)"** (the legacy one can't be
+   enabled on new projects anymore).
+2. Create an API key, restrict it to Places API (New).
+3. Set up billing — `websiteUri`/`phone`/`rating` fields put each call in the Enterprise SKU
+   pricing tier. Keep `scripts/search_queries.py` short at first.
 
-## 3. GitHub — repo secrets + enable the workflow
+## 4. GitHub repo secrets for the scraper
 
-In the repo's Settings → Secrets and variables → Actions, add:
+**Settings → Secrets and variables → Actions**, add:
 
 | Secret | Value |
 |---|---|
-| `INGEST_URL` | `https://vantage-contacts.<your-subdomain>.workers.dev/api/ingest` |
-| `INGEST_SECRET` | same value you set with `wrangler secret put INGEST_SECRET` |
-| `GOOGLE_PLACES_API_KEY` | the key from step 1 |
+| `INGEST_URL` | `https://vantage-solutions.pages.dev/api/ingest` (or your custom domain) |
+| `INGEST_SECRET` | the exact same value you set in Cloudflare step 2 |
+| `GOOGLE_PLACES_API_KEY` | from step 3 |
 
-Push the repo, then trigger a first run manually from the Actions tab (`workflow_dispatch`) rather
-than waiting for the cron — that way you see output immediately and can sanity-check the data
-before it's running unattended every 6 hours.
+## 5. Deploy
+
+**Actions → Deploy to Cloudflare Pages → Run workflow.** (It's manual — no auto-deploy on push,
+that's how this repo already worked before any of this.) This applies the schema and deploys the
+site in one run.
+
+## 6. Check it
+
+- Admin panel: `https://vantage-solutions.pages.dev/access/master`
+- Turn on the scraper: **Actions → Scrape and Ingest Business Contacts → Run workflow** (or just
+  wait — it's already on a 6-hour cron).
 
 ## Day to day
 
-- **Add a search query:** edit `scripts/search_queries.py`, push. Next run picks it up.
-- **Prune a business:** click "Exclude" in the admin panel. It won't reappear even if the same
-  Places search finds it again later — ingest never overwrites `status`.
-- **Add a category later:** same pattern — a category here is really just the `category` string
-  on a search query, so it's a config change, not a schema change.
+- **Push code** → run **Deploy to Cloudflare Pages** manually when you want it live, same as
+  always.
+- **Add a search query** → edit `scripts/search_queries.py`, commit. Next scrape run picks it up.
+- **Prune a business** → Exclude button in the admin panel, no deploy needed.
+- **Rotate a secret** → update it in the Pages project's Environment variables — takes effect on
+  the next deploy.
 
-## Before you actually email anyone on this list
+## Before emailing anyone on this list
 
-This pulls contact info a business already chose to publish on its own site — it doesn't scrape
-personal social profiles or anything not meant to be found. Still, worth having in place before
-sending anything:
-
-- **US:** CAN-SPAM requires a real physical address and a working unsubscribe/opt-out in every
-  message.
-- **EU/UK:** GDPR treats a named business email (`jane@company.com`) as personal data. B2B cold
-  email has a plausible "legitimate interest" basis in some cases, but it's worth a quick read of
-  current guidance (or a lawyer, for anything at real volume) rather than assuming — this isn't
-  legal advice.
-- **General:** the `status = 'excluded'` list doubles as a do-not-contact list. If anyone replies
-  asking to be left alone, exclude them there, not just in whatever email tool sends the actual
-  messages.
+Same as last time, still true: this only pulls contact info a business already published on its
+own site. CAN-SPAM needs a real physical address + working unsubscribe in every message (US);
+GDPR treats a named business email as personal data, worth checking current guidance for anything
+at real volume (EU/UK). Not legal advice.
