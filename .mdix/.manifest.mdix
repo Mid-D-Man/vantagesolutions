@@ -1,38 +1,21 @@
 @CONFIG(
   version    -> "1.0.0"
-  generated  -> "2026-07-15T11:34:06Z"
+  generated  -> "2026-07-15T11:44:53Z"
   debug_mode -> "off"
 )
 
 @DATA(
-  template      = ".mdix/project_structure/project_structure.mdix"
-  template_hash = "90b6d74ce239"
-  last_run      = "2026-07-15T11:34:06Z"
+  template      = ".mdix/patches/patch.mdix"
+  template_hash = "4185f7efe214"
+  last_run      = "2026-07-15T11:44:53Z"
   new_this_run  = 0
   overridden    = 0
   skipped       = 0
-  deleted       = 0
+  deleted       = 8
   renamed       = 0
   moved         = 0
   updated       = 0
 
   created_files::
-    ".gitignore"
-    ".vscode/extensions.json"
-    ".vscode/settings.json"
-    "README.md"
-    "package.json"
-    "src/app.css"
-    "src/app.html"
-    "src/lib/components/FollowUs.svelte"
-    "src/lib/components/Footer.svelte"
-    "src/lib/components/FreeTools.svelte"
-    "src/lib/components/Header.svelte"
-    "src/lib/components/Hero.svelte"
-    "src/lib/components/Raffle.svelte"
-    "src/lib/components/WhatWeDo.svelte"
-    "static/.gitkeep"
-    "svelte.config.js"
-    "tsconfig.json"
-    "vite.config.ts"
+    
 )
