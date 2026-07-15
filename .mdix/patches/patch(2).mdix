@@ -1,0 +1,24 @@
+// Brought to u by MidManStudio
+
+@CONFIG(
+  version    -> "1.0.0"
+  author     -> "MidManStudio"
+  features   -> "data"
+  debug_mode -> "off"
+)
+
+@QUICKFUNCS(
+  ~delete_file<object>(_path) { return { path = _path } }
+)
+
+@DATA(
+  delete_files::
+    delete_file("wrangler.jsonc")
+    delete_file("src/admin-ui.ts")
+    delete_file("src/auth.ts")
+    delete_file("src/constants.ts")
+    delete_file("src/csv.ts")
+    delete_file("src/db.ts")
+    delete_file("src/index.ts")
+    delete_file("src/types.ts")
+)
