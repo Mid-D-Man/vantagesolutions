@@ -11,7 +11,7 @@ jobs:
     if: ${{ vars.AUTO_RUN_ENABLED != 'false' || github.event_name == 'workflow_dispatch' }}
     defaults:
       run:
-        working-directory: contacts/scripts
+        working-directory: scripts
     steps:
       - name: Checkout
         uses: actions/checkout@v4
