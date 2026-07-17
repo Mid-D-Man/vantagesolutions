@@ -28,6 +28,7 @@ import requests
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 REQUEST_TIMEOUT = 90
 REQUEST_DELAY_SECS = 2.0   # between queries — be a polite citizen on a free shared service
+USER_AGENT = "VantageSolutionsContactBot/1.0 (+https://vantagesolutions.pages.dev)"
 
 
 def require_allowed_country(query: dict, allowed_countries: list) -> bool:
@@ -88,7 +89,13 @@ def _to_record(el: dict, query: dict):
 def run_query(query: dict) -> list:
     ql = _build_query(query["osm_tag"], query["city"], query["country"])
     try:
-        resp = requests.post(OVERPASS_URL, data={"data": ql}, timeout=REQUEST_TIMEOUT)
+        # Added custom User-Agent to resolve the 406 Client Error
+        resp = requests.post(
+            OVERPASS_URL, 
+            data={"data": ql}, 
+            headers={"User-Agent": USER_AGENT}, 
+            timeout=REQUEST_TIMEOUT
+        )
         resp.raise_for_status()
     except Exception as e:
         print(f"    [SKIP] Overpass error: {e}")
