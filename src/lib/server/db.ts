@@ -78,28 +78,31 @@ export async function listAllForExport(
 }
 
 /** The "prune" action from the admin panel - toggling a row out of (or back into) the default view. */
-export async function updateStatus(db: D1Database, placeId: string, status: BusinessStatus): Promise<boolean> {
-	const result = await db.prepare('UPDATE businesses SET status = ? WHERE place_id = ?').bind(status, placeId).run();
+export async function updateStatus(db: D1Database, sourceId: string, status: BusinessStatus): Promise<boolean> {
+	const result = await db
+		.prepare('UPDATE businesses SET status = ? WHERE source_id = ?')
+		.bind(status, sourceId)
+		.run();
 	return (result.meta?.changes ?? 0) > 0;
 }
 
 /** Used by the scraper to skip re-crawling a business's website once it's already known. */
-export async function getAllPlaceIds(db: D1Database): Promise<string[]> {
-	const { results } = await db.prepare('SELECT place_id FROM businesses').all<{ place_id: string }>();
-	return (results ?? []).map((r) => r.place_id);
+export async function getAllSourceIds(db: D1Database): Promise<string[]> {
+	const { results } = await db.prepare('SELECT source_id FROM businesses').all<{ source_id: string }>();
+	return (results ?? []).map((r) => r.source_id);
 }
 
 export async function upsertBusinesses(
 	db: D1Database,
 	records: IngestRecord[]
-): Promise<{ inserted: number; failed: { place_id: string; reason: string }[] }> {
+): Promise<{ inserted: number; failed: { source_id: string; reason: string }[] }> {
 	const now = new Date().toISOString();
-	const failed: { place_id: string; reason: string }[] = [];
+	const failed: { source_id: string; reason: string }[] = [];
 	const statements: D1PreparedStatement[] = [];
 
 	for (const rec of records) {
-		if (!rec.place_id || !rec.name) {
-			failed.push({ place_id: rec.place_id ?? '(missing)', reason: 'missing place_id or name' });
+		if (!rec.source_id || !rec.name) {
+			failed.push({ source_id: rec.source_id ?? '(missing)', reason: 'missing source_id or name' });
 			continue;
 		}
 
@@ -109,20 +112,20 @@ export async function upsertBusinesses(
 			db
 				.prepare(
 					`INSERT INTO businesses (
-             place_id, name, category, search_query, address, phone, website,
-             rating, user_rating_count, emails, contact_page_url,
-             site_reachable, site_status_code, status, discovered_at, last_scraped_at
+             source_id, source, name, category, search_query, country, address, phone,
+             website, emails, contact_page_url, site_reachable, site_status_code,
+             status, discovered_at, last_scraped_at
            )
            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, 'new', ?14, ?14)
-           ON CONFLICT(place_id) DO UPDATE SET
+           ON CONFLICT(source_id) DO UPDATE SET
+             source             = excluded.source,
              name              = excluded.name,
              category          = excluded.category,
              search_query      = excluded.search_query,
+             country            = excluded.country,
              address           = excluded.address,
              phone             = excluded.phone,
              website           = excluded.website,
-             rating            = excluded.rating,
-             user_rating_count = excluded.user_rating_count,
              emails            = excluded.emails,
              contact_page_url  = excluded.contact_page_url,
              site_reachable    = excluded.site_reachable,
@@ -130,15 +133,15 @@ export async function upsertBusinesses(
              last_scraped_at   = excluded.last_scraped_at`
 				)
 				.bind(
-					rec.place_id,
+					rec.source_id,
+					rec.source,
 					rec.name,
 					rec.category ?? null,
 					rec.search_query ?? null,
+					rec.country ?? null,
 					rec.address ?? null,
 					rec.phone ?? null,
 					rec.website ?? null,
-					rec.rating ?? null,
-					rec.user_rating_count ?? null,
 					JSON.stringify(rec.emails ?? []),
 					rec.contact_page_url ?? null,
 					rec.site_reachable === undefined ? null : rec.site_reachable ? 1 : 0,
@@ -153,4 +156,4 @@ export async function upsertBusinesses(
 	}
 
 	return { inserted: statements.length, failed };
-}
+		}
