@@ -1,15 +1,15 @@
 import type { Business } from '$lib/types/business';
 
 const COLUMNS: (keyof Business)[] = [
-	'place_id',
+	'source_id',
+	'source',
 	'name',
 	'category',
 	'search_query',
+	'country',
 	'address',
 	'phone',
 	'website',
-	'rating',
-	'user_rating_count',
 	'emails',
 	'contact_page_url',
 	'site_reachable',
