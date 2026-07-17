@@ -35,7 +35,7 @@
 
 	// ── Dashboard ──
 	interface Business {
-		place_id: string;
+		source_id: string;
 		name: string;
 		category: string | null;
 		website: string | null;
@@ -104,15 +104,15 @@
 	}
 
 	async function toggleStatus(business: Business) {
-		pendingIds.add(business.place_id);
+		pendingIds.add(business.source_id);
 		pendingIds = pendingIds;
 		const newStatus = business.status === 'excluded' ? 'new' : 'excluded';
-		await fetch(`/api/businesses/${encodeURIComponent(business.place_id)}/status`, {
+		await fetch(`/api/businesses/${encodeURIComponent(business.source_id)}/status`, {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ status: newStatus })
 		});
-		pendingIds.delete(business.place_id);
+		pendingIds.delete(business.source_id);
 		pendingIds = pendingIds;
 		await loadBusinesses();
 	}
@@ -206,7 +206,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each businesses as business (business.place_id)}
+						{#each businesses as business (business.source_id)}
 							<tr>
 								<td class="name">
 									{business.name}
@@ -238,7 +238,7 @@
 								<td>{business.phone ?? '—'}</td>
 								<td class="muted">{business.address ?? '—'}</td>
 								<td>
-									<button disabled={pendingIds.has(business.place_id)} on:click={() => toggleStatus(business)}>
+									<button disabled={pendingIds.has(business.source_id)} on:click={() => toggleStatus(business)}>
 										{business.status === 'excluded' ? 'Restore' : 'Exclude'}
 									</button>
 								</td>
