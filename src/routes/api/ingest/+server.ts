@@ -33,7 +33,7 @@ export const POST: RequestHandler = async (event) => {
 	return json({
 		results: [
 			...Array.from({ length: inserted }, () => ({ ok: true, inserted: true })),
-			...failed.map((f) => ({ ok: false, item: f.place_id, reason: f.reason }))
+			...failed.map((f) => ({ ok: false, item: f.source_id, reason: f.reason }))
 		],
 		inserted,
 		failed: failed.length
