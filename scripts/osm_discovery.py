@@ -3,8 +3,8 @@ import time
 import requests
 
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
-REQUEST_TIMEOUT = 90
-REQUEST_DELAY_SECS = 3.0   # Slightly increased delay to be safer under load
+REQUEST_TIMEOUT = 120  # Bumped up to give the server more time for big cities
+REQUEST_DELAY_SECS = 3.0   
 USER_AGENT = "VantageSolutionsContactBot/1.0 (+https://vantagesolutions.pages.dev)"
 
 
@@ -14,10 +14,11 @@ def require_allowed_country(query: dict, allowed_countries: list) -> bool:
 
 def _build_query(osm_tag: tuple, city: str, country: str) -> str:
     key, value = osm_tag
-    # Optimized query utilizing geocodeArea for faster spatial indexing
+    # Reverted to valid raw Overpass QL syntax, no frontend macros
     return f"""
-[out:json][timeout:{REQUEST_TIMEOUT - 15}];
-geocodeArea:"{city}, {country}"->.searchArea;
+[out:json][timeout:{REQUEST_TIMEOUT}];
+area["ISO3166-1"="{country}"][admin_level=2]->.country;
+area["name"="{city}"](area.country)->.searchArea;
 (
   nwr["{key}"="{value}"](area.searchArea);
 );
