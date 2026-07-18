@@ -194,58 +194,60 @@
 			{:else if state === 'empty'}
 				<div class="status-msg">No businesses match this filter yet.</div>
 			{:else}
-				<table>
-					<thead>
-						<tr>
-							<th>Business</th>
-							<th>Website</th>
-							<th>Emails</th>
-							<th>Phone</th>
-							<th>Address</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						{#each businesses as business (business.source_id)}
+				<div class="table-wrap">
+					<table>
+						<thead>
 							<tr>
-								<td class="name">
-									{business.name}
-									<div class="muted">{business.category ?? ''}</div>
-								</td>
-								<td>
-									{#if business.website}
-										<a href={business.website} target="_blank" rel="noopener noreferrer">{business.website}</a>
-									{:else}
-										<span class="muted">—</span>
-									{/if}
-									<div>
-										{#if business.site_reachable === 1}
-											<span class="badge reachable">reachable{business.site_status_code ? ` · ${business.site_status_code}` : ''}</span>
-										{:else if business.site_reachable === 0}
-											<span class="badge unreachable">unreachable</span>
-										{:else}
-											<span class="badge">not checked</span>
-										{/if}
-									</div>
-								</td>
-								<td class="emails">
-									{#each formatEmails(business.emails) as email}
-										<div>{email}</div>
-									{:else}
-										<span class="muted">none found</span>
-									{/each}
-								</td>
-								<td>{business.phone ?? '—'}</td>
-								<td class="muted">{business.address ?? '—'}</td>
-								<td>
-									<button disabled={pendingIds.has(business.source_id)} on:click={() => toggleStatus(business)}>
-										{business.status === 'excluded' ? 'Restore' : 'Exclude'}
-									</button>
-								</td>
+								<th>Business</th>
+								<th>Website</th>
+								<th>Emails</th>
+								<th>Phone</th>
+								<th>Address</th>
+								<th></th>
 							</tr>
-						{/each}
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							{#each businesses as business (business.source_id)}
+								<tr>
+									<td class="name" data-label="Business">
+										{business.name}
+										<div class="muted">{business.category ?? ''}</div>
+									</td>
+									<td data-label="Website">
+										{#if business.website}
+											<a href={business.website} target="_blank" rel="noopener noreferrer">{business.website}</a>
+										{:else}
+											<span class="muted">—</span>
+										{/if}
+										<div>
+											{#if business.site_reachable === 1}
+												<span class="badge reachable">reachable{business.site_status_code ? ` · ${business.site_status_code}` : ''}</span>
+											{:else if business.site_reachable === 0}
+												<span class="badge unreachable">unreachable</span>
+											{:else}
+												<span class="badge">not checked</span>
+											{/if}
+										</div>
+									</td>
+									<td class="emails" data-label="Emails">
+										{#each formatEmails(business.emails) as email}
+											<div>{email}</div>
+										{:else}
+											<span class="muted">none found</span>
+										{/each}
+									</td>
+									<td data-label="Phone">{business.phone ?? '—'}</td>
+									<td class="muted" data-label="Address">{business.address ?? '—'}</td>
+									<td class="actions">
+										<button disabled={pendingIds.has(business.source_id)} on:click={() => toggleStatus(business)}>
+											{business.status === 'excluded' ? 'Restore' : 'Exclude'}
+										</button>
+									</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
+				</div>
 
 				<div class="pagination">
 					<button disabled={page <= 1} on:click={() => { page -= 1; loadBusinesses(); }}>&larr; Prev</button>
@@ -365,10 +367,18 @@
 	}
 
 	/* ── Dashboard ── */
+	/* Constrains the dashboard on large desktop monitors so the table doesn't
+	   stretch into awkwardly wide columns - this whole section, header
+	   through main, shares one centered max-width. */
+	.dashboard {
+		max-width: 1440px;
+		margin: 0 auto;
+	}
 	.dashboard header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 12px;
 		padding: 16px 24px;
 		border-bottom: 1px solid var(--border);
 	}
@@ -391,6 +401,13 @@
 	main {
 		padding: 0 24px 40px;
 	}
+	.table-wrap {
+		/* Fallback for any width where the table is still wider than comfortable -
+		   scrolls horizontally instead of squeezing columns unreadably thin. */
+		width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
 	table {
 		width: 100%;
 		border-collapse: collapse;
@@ -410,6 +427,7 @@
 		font-size: 11px;
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
+		white-space: nowrap;
 	}
 	td.name {
 		font-weight: 600;
@@ -443,6 +461,7 @@
 	}
 	.pagination {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		gap: 10px;
 		margin-top: 20px;
@@ -456,5 +475,136 @@
 		text-align: center;
 		color: var(--text-muted);
 		padding: 60px 0;
+	}
+
+	/* ── Tablet (≤1024px): tighten spacing, table can still scroll via .table-wrap ── */
+	@media (max-width: 1024px) {
+		.dashboard header,
+		.toolbar,
+		main {
+			padding-left: 16px;
+			padding-right: 16px;
+		}
+	}
+
+	/* ── Small tablet / large phone (≤768px): minimum comfortable column widths
+	     kick in the horizontal scroll rather than squeezing text further ── */
+	@media (max-width: 768px) {
+		table {
+			min-width: 720px;
+		}
+	}
+
+	/* ── Mobile (≤640px): table becomes a stack of cards, toolbar goes full-width ── */
+	@media (max-width: 640px) {
+		.login-wrap {
+			padding: 16px;
+		}
+		.login-card {
+			padding: 24px 20px;
+		}
+
+		.dashboard header {
+			padding: 14px 16px;
+		}
+		.dashboard header h1 {
+			font-size: 13px;
+		}
+
+		.toolbar {
+			flex-direction: column;
+			align-items: stretch;
+			padding: 14px 16px;
+		}
+		.toolbar input,
+		.toolbar select,
+		.toolbar button {
+			width: 100%;
+		}
+		.toolbar .spacer {
+			display: none;
+		}
+
+		main {
+			padding: 0 16px 32px;
+		}
+
+		/* Card layout: each row becomes a self-contained card, each cell becomes
+		   a labeled line inside it (label comes from the data-label attribute set
+		   in the markup), except the name cell which acts as the card's heading. */
+		.table-wrap {
+			overflow-x: visible;
+		}
+		table {
+			min-width: 0;
+			display: block;
+			margin-top: 12px;
+		}
+		thead {
+			display: none;
+		}
+		tbody {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+		tr {
+			display: block;
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			padding: 12px 14px;
+			background: var(--surface);
+		}
+		td {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			gap: 12px;
+			padding: 6px 0;
+			border-bottom: none;
+		}
+		td::before {
+			content: attr(data-label);
+			flex-shrink: 0;
+			font-weight: 600;
+			font-size: 11px;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+			color: var(--text-muted);
+		}
+		td.name {
+			display: block;
+			padding-bottom: 8px;
+			margin-bottom: 6px;
+			border-bottom: 1px solid var(--border);
+			font-size: 15px;
+		}
+		td.name::before {
+			content: none;
+		}
+		td.emails {
+			flex-direction: column;
+			align-items: stretch;
+		}
+		td.emails::before {
+			margin-bottom: 2px;
+		}
+		td.actions {
+			justify-content: stretch;
+		}
+		td.actions::before {
+			content: none;
+		}
+		td.actions button {
+			width: 100%;
+			min-height: 42px;
+		}
+
+		.pagination {
+			gap: 8px;
+		}
+		.pagination button {
+			min-height: 40px;
+		}
 	}
 </style>
