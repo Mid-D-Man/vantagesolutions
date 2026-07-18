@@ -11,6 +11,7 @@ export interface Business {
 	address: string | null;
 	phone: string | null;
 	website: string | null;
+	website_key: string | null; // normalized hostname, used only for cross-source dedup — not shown in the UI
 	emails: string; // JSON-encoded string[] - D1 has no native array/JSON column type
 	contact_page_url: string | null;
 	site_reachable: number | null; // 0 / 1 / null
@@ -35,4 +36,4 @@ export interface IngestRecord {
 	contact_page_url?: string;
 	site_reachable?: boolean;
 	site_status_code?: number;
-}
+	}
