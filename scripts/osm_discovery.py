@@ -2,10 +2,29 @@
 import time
 import requests
 
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+# Through 2025-2026 the shared overpass-api.de primary has gotten increasingly
+# overloaded (a lot of it bot/AI-scraper traffic hitting the one public
+# instance), so a 504 there under completely normal query volume - like a
+# single city/category query - isn't rare or a sign anything here is wrong.
+# A 504 means the SERVER gave up because it's too busy, not that our request
+# was slow - so a bigger client-side timeout can't fix it; the server hands
+# back the 504 before that ever matters.
+#
+# Fix: try a couple of the healthier community mirrors first, keep the
+# original overpass-api.de as a last-resort fallback rather than the only
+# option. Order picked from current (2026) reports of which mirrors are
+# holding up best for this kind of traffic - swap the order any time based on
+# what you're actually seeing in the run logs.
+OVERPASS_URLS = [
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://z.overpass-api.de/api/interpreter",
+    "https://lz4.overpass-api.de/api/interpreter",
+    "https://overpass-api.de/api/interpreter",  # original primary, last resort
+]
+
 REQUEST_TIMEOUT = 120  # Bumped up to give the server more time for big cities
-REQUEST_DELAY_SECS = 3.0   
-USER_AGENT = "VantageSolutionsContactBot/1.0 (+https://vantagesolutions.pages.dev)"
+REQUEST_DELAY_SECS = 3.0
+USER_AGENT = "VantageSolutionsOSMBot/1.0 (+https://vantagesolutions.pages.dev)"
 
 
 def require_allowed_country(query: dict, allowed_countries: list) -> bool:
@@ -61,26 +80,52 @@ def _to_record(el: dict, query: dict):
 
 
 def run_query(query: dict) -> list:
+    """Tries each Overpass endpoint in OVERPASS_URLS in order, moving on to the
+    next one for a timeout/5xx/network failure (transient, endpoint-specific).
+    A 400 (bad query syntax) stops immediately instead of retrying elsewhere -
+    the query is malformed the same way on every mirror, so trying the rest
+    would just waste time without changing the outcome.
+    """
     ql = _build_query(query["osm_tag"], query["city"], query["country"])
-    try:
-        resp = requests.post(
-            OVERPASS_URL, 
-            data={"data": ql}, 
-            headers={"User-Agent": USER_AGENT}, 
-            timeout=REQUEST_TIMEOUT
-        )
-        resp.raise_for_status()
-    except Exception as e:
-        print(f"    [SKIP] Overpass error: {e}")
-        return []
 
-    elements = resp.json().get("elements", [])
-    records = []
-    for el in elements:
-        rec = _to_record(el, query)
-        if rec:
-            records.append(rec)
-    return records
+    for i, url in enumerate(OVERPASS_URLS):
+        try:
+            resp = requests.post(
+                url,
+                data={"data": ql},
+                headers={"User-Agent": USER_AGENT, "Accept": "*/*"},
+                timeout=REQUEST_TIMEOUT,
+            )
+        except requests.exceptions.RequestException as e:
+            print(f"    [MIRROR FAIL] {url} — {e}")
+            continue
+
+        if resp.status_code == 400:
+            print(f"    [SKIP] Overpass query error (400) at {url}: {resp.text[:200]}")
+            return []
+
+        if not resp.ok:
+            print(f"    [MIRROR FAIL] {url} — HTTP {resp.status_code}")
+            continue
+
+        try:
+            elements = resp.json().get("elements", [])
+        except ValueError:
+            print(f"    [MIRROR FAIL] {url} — response wasn't valid JSON")
+            continue
+
+        if i > 0:
+            print(f"    (served by mirror: {url})")
+
+        records = []
+        for el in elements:
+            rec = _to_record(el, query)
+            if rec:
+                records.append(rec)
+        return records
+
+    print(f"    [SKIP] all Overpass endpoints failed for this query")
+    return []
 
 
 def discover(queries: list, allowed_countries: list) -> list:
