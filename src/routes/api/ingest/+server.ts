@@ -28,14 +28,20 @@ export const POST: RequestHandler = async (event) => {
 		return error(400, `Batch too large (max ${MAX_INGEST_BATCH})`);
 	}
 
-	const { inserted, failed } = await upsertBusinesses(env.DB, records as IngestRecord[]);
+	const { inserted, updated, merged, capped, failed } = await upsertBusinesses(env.DB, records as IngestRecord[]);
 
 	return json({
 		results: [
-			...Array.from({ length: inserted }, () => ({ ok: true, inserted: true })),
+			...Array.from({ length: inserted }, () => ({ ok: true, action: 'inserted' })),
+			...Array.from({ length: updated }, () => ({ ok: true, action: 'updated' })),
+			...Array.from({ length: merged }, () => ({ ok: true, action: 'merged' })),
+			...Array.from({ length: capped }, () => ({ ok: false, action: 'capped', reason: 'database is at MAX_BUSINESSES cap' })),
 			...failed.map((f) => ({ ok: false, item: f.source_id, reason: f.reason }))
 		],
 		inserted,
+		updated,
+		merged,
+		capped,
 		failed: failed.length
 	});
 };
