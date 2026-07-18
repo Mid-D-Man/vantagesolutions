@@ -27,6 +27,35 @@ jobs:
         id: build
         run: npm run build
 
+      # schema.sql itself only CREATE TABLE/INDEX IF NOT EXISTS, which is safe to
+      # re-run against a table that already has every column it expects - but it
+      # can't add a column to a table that predates that column (SQLite has no
+      # "ALTER TABLE ADD COLUMN IF NOT EXISTS"). This step covers that gap so a
+      # new column added to the schema doesn't require a separate manual CLI step
+      # before deploying: it's tolerant of the two expected non-error outcomes
+      # ("duplicate column name" - already applied; "no such table" - brand new
+      # database, schema.sql below will create it with the column already in
+      # place) and only fails the job for a genuinely unexpected error.
+      #
+      # Any future migration that only adds columns can follow this same pattern:
+      # add a step here that runs it with the same tolerant grep before the
+      # schema.sql step.
+      - name: Apply pending column migrations
+        id: migrate
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set +e
+          OUTPUT=$(npx --yes wrangler@4 d1 execute vantagesolutions-contacts --remote --file=./migrate_v3_dedup.sql 2>&1)
+          STATUS=$?
+          echo "$OUTPUT"
+          if [ $STATUS -ne 0 ] && ! echo "$OUTPUT" | grep -qiE "duplicate column name|no such table"; then
+            echo "::error::migrate_v3_dedup.sql failed for a reason other than 'already applied' or 'fresh database' — stopping deploy."
+            exit 1
+          fi
+          exit 0
+
       # schema.sql uses CREATE TABLE/INDEX IF NOT EXISTS throughout, so this is
       # always safe to re-run - it never touches existing data. Requires the
       # "vantagesolutions-contacts" D1 database to already exist and be bound
