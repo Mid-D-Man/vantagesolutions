@@ -102,7 +102,10 @@ def main():
 
     all_records = [enrich_with_contact_info(r, known_ids) for r in all_discovered]
 
-    total_inserted = 0
+    total_inserted = 0  # genuinely new businesses
+    total_updated  = 0  # already-known business, rediscovered — refreshed in place
+    total_merged   = 0  # same business found under a different source_id — merged into the existing row
+    total_capped   = 0  # would-be new business, skipped because the database is at MAX_BUSINESSES
     total_failed   = 0
     batches = [all_records[i:i + INGEST_BATCH_SIZE] for i in range(0, len(all_records), INGEST_BATCH_SIZE)]
     print(f"\nIngesting in {len(batches)} batch(es) of up to {INGEST_BATCH_SIZE}...")
@@ -112,10 +115,16 @@ def main():
         try:
             data = ingest_batch(batch)
             inserted = data.get("inserted", 0)
+            updated  = data.get("updated", 0)
+            merged   = data.get("merged", 0)
+            capped   = data.get("capped", 0)
             failed   = data.get("failed", 0)
             total_inserted += inserted
+            total_updated  += updated
+            total_merged   += merged
+            total_capped   += capped
             total_failed   += failed
-            print(f"    Inserted/updated: {inserted}  |  Failed: {failed}")
+            print(f"    New: {inserted}  |  Updated: {updated}  |  Merged: {merged}  |  Capped: {capped}  |  Failed: {failed}")
             for r in data.get("results", []):
                 if not r.get("ok"):
                     print(f"    [FAIL] {r.get('item')} — {r.get('reason')}")
@@ -124,8 +133,11 @@ def main():
             print(f"    [BATCH ERROR] {exc}")
 
     print(f"\n{'='*55}")
-    print(f"  Total inserted/updated: {total_inserted}")
-    print(f"  Total failed: {total_failed}")
+    print(f"  New: {total_inserted}  |  Updated: {total_updated}  |  Merged: {total_merged}")
+    print(f"  Capped (skipped, DB full): {total_capped}  |  Failed: {total_failed}")
+    if total_capped:
+        print(f"  [WARN] Database is at its MAX_BUSINESSES cap — raise the constant in")
+        print(f"         src/lib/server/db.ts, or exclude/clear out old rows, to store more.")
     print(f"{'='*55}")
 
 
